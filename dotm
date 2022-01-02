@@ -49,8 +49,8 @@ class Config:
 
 
 def help():
-  print("--help\t help message")
-  print("--create\t create new config file")
+  print("--help, -h\t help message")
+  print("--create, -C\t create new config file")
 
 def init(): 
   print("what is dotfiles dir path: ")
