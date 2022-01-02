@@ -11,6 +11,7 @@ parser = ConfigParser()
 default_config = {'dotfiles_path': "None"}
 
 class Config:
+  ''' create config file and change options '''
   def __init__(self):
     self.config_file_path = f"/home/{username}/.config/dotm/dotm.conf"
     self.config_dir_path = f"/home/{username}/.config/dotm/"
