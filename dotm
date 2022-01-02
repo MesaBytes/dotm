@@ -14,7 +14,7 @@ config = configparser.ConfigParser()
 
 config['main'] = {'dotfiles_path': ""}
 
-class Config:
+class Config_manager:
   def __init__(self):
     self.config_file_path = f"/home/{username}/.config/dotm/dotm.conf"
     self.config_dir_path = f"/home/{username}/.config/dotm/"
@@ -57,11 +57,13 @@ def init():
   dotfiles_path = str(input(": "))
 
 def main(): 
+  config_manager = Config_manager()
+  
   if "--help" in args or "-h" in args:
     help()
     exit(0)
   elif "--create" in args or "-C" in args:
-    Config().create_file()
+    config_manager.create_file()
 
 if __name__ == "__main__":
   main()
