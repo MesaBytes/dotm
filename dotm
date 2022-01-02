@@ -11,8 +11,7 @@ args = sys.argv[1:]
 
 config = configparser.ConfigParser()
 
-config['main'] = {'dotfiles_path': "None"}
-
+default_config = {'dotfiles_path': "None"}
 class Config_manager:
   def __init__(self):
     self.config_file_path = f"/home/{username}/.config/dotm/dotm.conf"
@@ -30,12 +29,13 @@ class Config_manager:
 
     return True
 
-  def create_file(self): 
+  def create_file(self, config_obj = default_config): 
     if not self.config_dir_exists(): self.create_dir()
     if self.config_file_exists():
       answer  = str(input("You are going to overwrite your configuration, Do you want to continue [yes/no] : "))
       if answer == 'no' or answer == 'n': return
 
+    config["main"] = config_obj
     with open(self.config_file_path, 'w') as configfile:
       config.write(configfile)
     configfile.close()
@@ -46,18 +46,20 @@ class Config_manager:
     makedirs(self.config_dir_path)
     print("Directory '% s' created" % self.config_dir_path)
 
+config_manager = Config_manager()
 
 def help():
   print("--help, -h\t help message")
   print("--create, -C\t create new config file")
 
-def init(): 
-  print("what is dotfiles dir path: ")
-  dotfiles_path = str(input(": "))
+def initial_setup():
+  dotfiles_path = str(input("Your dotfiles dir path (Absolute Path): "))
+  config_manager.create_file({"dotfiles_path": dotfiles_path})
 
 def main(): 
-  config_manager = Config_manager()
-
+  if not config_manager.config_file_exists():
+    initial_setup()
+  
   if "--help" in args or "-h" in args:
     help()
     exit(0)
