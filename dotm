@@ -11,7 +11,7 @@ args = sys.argv[1:]
 
 config = configparser.ConfigParser()
 
-config['main'] = {'dotfiles_path': ""}
+config['main'] = {'dotfiles_path': "None"}
 
 class Config_manager:
   def __init__(self):
