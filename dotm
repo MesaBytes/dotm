@@ -55,17 +55,13 @@ def help():
 def initial_setup():
   dotfiles_path = str(input("Your dotfiles dir path (Absolute Path): "))
   config_manager.create_file({"dotfiles_path": dotfiles_path})
+  exit(0)
 
 def main(): 
-  if not config_manager.config_file_exists():
-    initial_setup()
+  if not config_manager.config_file_exists(): initial_setup()
   
-  if "--help" in args or "-h" in args:
-    help()
-    exit(0)
-  elif "--create" in args or "-C" in args:
-    config_manager.create_file()
-    exit(0)
+  if "--help" in args or "-h" in args: help(); exit(0)
+  elif "--create" in args or "-C" in args: config_manager.create_file(); exit(0)
 
 if __name__ == "__main__":
   main()
