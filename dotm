@@ -7,7 +7,6 @@ import getpass
 
 username = getpass.getuser()
 
-
 args = sys.argv[1:]
 
 config = configparser.ConfigParser()
@@ -58,12 +57,13 @@ def init():
 
 def main(): 
   config_manager = Config_manager()
-  
+
   if "--help" in args or "-h" in args:
     help()
     exit(0)
   elif "--create" in args or "-C" in args:
     config_manager.create_file()
+    exit(0)
 
 if __name__ == "__main__":
   main()
