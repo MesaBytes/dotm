@@ -60,7 +60,8 @@ def main():
   if "--help" in args or "-h" in args:
     help()
     exit(0)
-  Config().create_file()
+  elif "--create" in args or "-C" in args:
+    Config().create_file()
 
 if __name__ == "__main__":
   main()
