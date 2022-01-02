@@ -1,4 +1,4 @@
-# dotm
+# work in progress!!
 dotfiles manager
 
 ## Download the script
