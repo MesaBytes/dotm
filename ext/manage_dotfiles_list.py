@@ -1,5 +1,6 @@
 import getpass
 import json
+import uuid
 from os import path
 from ext.is_valid import is_valid_file
 from ext.color import color 
@@ -22,6 +23,22 @@ class Dotfiles_list_manager:
       print(f"[{color.light.green('+')}] dotfiles list file '% s' is created" % self.dotfiles_list_path)
 
   def list(self): pass
-  def add(self, source: str, dist: str): pass
+  def add(self, source: str, dist: str): 
+    with open(self.dotfiles_list_path) as fp:
+     listobj = json.load(fp)
+    
+    listobj.append({
+      "id": uuid.uuid4().hex,
+      "source": source,
+      "dist": dist
+    })
+
+    with open(self.dotfiles_list_path, 'w') as json_file:
+      json.dump(listobj, json_file, 
+                        indent=4,  
+                        separators=(',',': '))
+
+    fp.close()
+    json_file.close()
+ 
   def remove(self): pass
-  def generate_id(self): pass
