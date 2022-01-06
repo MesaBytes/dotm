@@ -30,19 +30,19 @@ class Config:
   def create_file(self): 
     if not self.dir_exists(): self.create_dir()
     if self.file_exists():
-      answer  = str(input("You are going to overwrite your configuration, Do you want to continue [yes/no]: "))
+      answer  = str(input(f"[{color.light.grey('?')}] You are going to overwrite your configuration, Do you want to continue [{color.bold('yes/no')}]: "))
       if answer == 'no' or answer == 'n': return
     
     parser["main"] = default_config
     with open(self.config_file_path, 'w') as configfile:
       parser.write(configfile)
     configfile.close()
-    print("[+] Config file '% s' created" % self.config_file_path)
+    print(f"[{color.light.green('+')}] Config file '% s' created" % self.config_file_path)
 
   def create_dir(self): 
     if self.dir_exists(): return
     makedirs(self.config_dir_path)
-    print("[+] Directory '% s' created" % self.config_dir_path)
+    print(f"[{color.light.green('+')}] Directory '% s' created" % self.config_dir_path)
 
   def set(self, section, option, value): 
     if not self.file_exists(): self.create_file()
@@ -65,9 +65,9 @@ def help():
   print("--create, -C\t create new config file")
 
 def initial_setup():
-  dotfiles_path = str(input("Your dotfiles directory path (Absolute Path): "))
+  dotfiles_path = str(input(f"Your dotfiles directory path ({color.bold('Absolute Path')}): "))
   if not path.exists(dotfiles_path):
-    print(f"'{dotfiles_path}' is not a valid directory!")
+    print(f"{color.selected(dotfiles_path)} is {color.light.red('not a valid directory!')}")
     sys.exit(1)
 
   config.set("main", "dotfiles_path", dotfiles_path)
