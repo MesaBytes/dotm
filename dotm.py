@@ -1,11 +1,13 @@
 #! /usr/bin/python
 
 import sys
+import getpass
 from ext.manage_config import Config
 from os import path
 from ext.color import color
 from ext.manage_dotfiles_list import Dotfiles_list_manager
 
+username = getpass.getuser()
 args = sys.argv[1:]
 config = Config()
 dotfiles_list_manager = Dotfiles_list_manager()
@@ -26,6 +28,7 @@ def initial_setup():
     if not path.exists(dotfiles_path):
       print(f"{color.selected(dotfiles_path)} is {color.light.red('not a valid directory!')}")
       sys.exit(1)
+    if "~/" in dotfiles_path: dotfiles_path.replace("~/", f"/home/{username}/")
     if dotfiles_path[-1] != '/': dotfiles_path += '/'
     config.set("main", "dotfiles_path", dotfiles_path)
 
@@ -38,6 +41,17 @@ def main():
   if not config.file_exists() or not dotfiles_list_manager.file_exists(): initial_setup()
   if "--help" in args or "-h" in args: help_message(); sys.exit(0)
   elif "--create" in args or "-C" in args: config.create_file(); sys.exit(0)
+  elif "--list" in args or "-l" in args: dotfiles_list_manager.list(); sys.exit(0)
+  elif "--add" in args or "-a" in args: 
+    for arg in args:
+      if arg.startswith('-'):
+        args.remove(arg)
+    source, dist = args 
+    if "~/" in source: source.replace("~/", f"/home/{username}/")
+
+    print(source)
+    print(dist)
+    sys.exit(0)
 
 if __name__ == "__main__":
   main()
