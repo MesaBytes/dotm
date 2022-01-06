@@ -17,7 +17,9 @@ def initial_setup():
   if isValidDir(dotfiles_path) == False:
     print(f"{color.selected(dotfiles_path)} is {color.light.red('not a valid directory!')}")
     sys.exit(1)
-  
+
+  if dotfiles_path[-1] != '/': dotfiles_path += '/'
+
   config.set("main", "dotfiles_path", dotfiles_path)
   sys.exit(0)
 
