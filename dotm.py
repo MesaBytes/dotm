@@ -16,6 +16,7 @@ def help_message():
   print(f'''usage: dotm [options]\n
 {color.light.yellow('options:')}
   {color.light.green('-h, --help')}\t help message
+  {color.light.green('-c, --change')}\t change dotfiles directory 
   {color.light.green('-C, --create')}\t create new config file
   {color.light.green('-l, --list')}\t print dotfiles list
   {color.light.green('-a, --add')}\t add new dotfile path
@@ -48,9 +49,9 @@ def main():
         args.remove(arg)
     source, dist = args 
     if "~/" in source: source.replace("~/", f"/home/{username}/")
+    if dist[-1] != '/': dist += '/'
 
-    print(source)
-    print(dist)
+    dotfiles_list_manager.add(source, dist)
     sys.exit(0)
 
 if __name__ == "__main__":
