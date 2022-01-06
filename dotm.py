@@ -1,9 +1,9 @@
 #! /usr/bin/python
 
 import sys
-from functions.manage_config import Config
-from functions.is_valid_dir import isValidDir
-from library.color import color
+from ext.manage_config import Config
+from ext.is_valid_dir import isValidDir
+from ext.color import color
 
 args = sys.argv[1:]
 config = Config()

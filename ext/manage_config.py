@@ -1,7 +1,7 @@
 import getpass
 from os import (makedirs, path)
 from configparser import ConfigParser
-from library.color import color 
+from ext.color import color 
 
 username = getpass.getuser()
 parser = ConfigParser()
