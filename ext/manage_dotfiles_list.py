@@ -46,6 +46,12 @@ class Dotfiles_list_manager:
     with open(self.dotfiles_list_path) as fp:
      listobj = json.load(fp)
     
+    if len(listobj) > 0:
+      for item in listobj:
+        if item["source"] == source:
+          print(f"{source} is already on the list!")
+          return False
+
     listobj.append({
       "id": uuid.uuid4().hex,
       "source": source,
