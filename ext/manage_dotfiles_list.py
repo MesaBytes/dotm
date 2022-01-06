@@ -23,6 +23,12 @@ class Dotfiles_list_manager:
       f.close()
       print(f"[{color.light.green('+')}] dotfiles list file '% s' is created" % self.dotfiles_list_path)
 
+  def empty_list(self):
+    if path.exists(self.dotfiles_list_path):
+      with open(self.dotfiles_list_path,'w') as f: json.dump([], f)
+      f.close()
+      print(f"[{color.light.green('+')}] dotfiles list file '% s' is emptied" % self.dotfiles_list_path)
+
   def list(self): 
     if not path.exists(self.dotfiles_list_path):
       print(f"can't read from dotfiles.json!")
