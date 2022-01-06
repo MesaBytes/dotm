@@ -19,6 +19,7 @@ def help_message():
   {color.light.green('-c, --change')}\t change dotfiles directory 
   {color.light.green('-C, --create')}\t create new config file
   {color.light.green('-l, --list')}\t print dotfiles list
+  {color.light.green('-e, --empty-list')}\t empty dotfiles list
   {color.light.green('-a, --add')}\t add new dotfile path
   {color.light.green('-r, --remove')}\t remove dotfile from the list using it's id
 ''')
@@ -41,8 +42,11 @@ def initial_setup():
 def main():
   if not config.file_exists() or not dotfiles_list_manager.file_exists(): initial_setup()
   if "--help" in args or "-h" in args: help_message(); sys.exit(0)
+  # elif "--change" in args or "-c" in args: config.create_file(); sys.exit(0)
   elif "--create" in args or "-C" in args: config.create_file(); sys.exit(0)
   elif "--list" in args or "-l" in args: dotfiles_list_manager.list(); sys.exit(0)
+  elif "--empty-list" in args or "-e" in args: dotfiles_list_manager.empty_list(); sys.exit(0)
+  # elif "--remove" in args or "-r" in args: dotfiles_list_manager.remove(); sys.exit(0)
   elif "--add" in args or "-a" in args: 
     for arg in args:
       if arg.startswith('-'):
