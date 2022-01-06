@@ -2,7 +2,7 @@
 
 import sys
 from ext.manage_config import Config
-from ext.is_valid_dir import isValidDir
+from os import path
 from ext.color import color
 
 args = sys.argv[1:]
@@ -20,7 +20,7 @@ def help():
 
 def initial_setup():
   dotfiles_path = str(input(f"Your dotfiles directory path ({color.bold('Absolute Path')}): "))
-  if isValidDir(dotfiles_path) == False:
+  if not path.exists(dotfiles_path):
     print(f"{color.selected(dotfiles_path)} is {color.light.red('not a valid directory!')}")
     sys.exit(1)
 
