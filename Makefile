@@ -1,3 +1,5 @@
+init:
+	pip install -r requirements.txt
 build-pyinstaller:
 	pyinstaller --clean -y --onefile dotm.py
 
