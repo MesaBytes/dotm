@@ -9,8 +9,14 @@ args = sys.argv[1:]
 config = Config()
 
 def help():
-  print("--help, -h\t help message")
-  print("--create, -C\t create new config file")
+  print(f'''usage: dotm [options]\n
+{color.light.yellow('options:')}
+  {color.light.green('-h, --help')}\t help message
+  {color.light.green('-C, --create')}\t create new config file
+  {color.light.green('-l, --list')}\t print dotfiles list
+  {color.light.green('-a, --add')}\t add new dotfile path
+  {color.light.green('-r, --remove')}\t remove dotfile from the list using it's id
+''')
 
 def initial_setup():
   dotfiles_path = str(input(f"Your dotfiles directory path ({color.bold('Absolute Path')}): "))
