@@ -41,7 +41,7 @@ def initial_setup():
 
 def main():
   if not config.file_exists() or not dotfiles_list_manager.file_exists(): initial_setup()
-  if "--help" in args or "-h" in args: help_message(); sys.exit(0)
+  if "--help" in args or "-h" in args or len(args) == 0: help_message(); sys.exit(0)
   # elif "--change" in args or "-c" in args: config.create_file(); sys.exit(0)
   elif "--create" in args or "-C" in args: config.create_file(); sys.exit(0)
   elif "--list" in args or "-l" in args: dotfiles_list_manager.list(); sys.exit(0)
