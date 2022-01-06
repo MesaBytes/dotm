@@ -4,6 +4,7 @@ import sys
 import getpass
 from configparser import ConfigParser
 from os import (makedirs, path)
+from library.color import color
 
 args = sys.argv[1:]
 username = getpass.getuser()
@@ -72,7 +73,7 @@ def initial_setup():
   config.set("main", "dotfiles_path", dotfiles_path)
   sys.exit(0)
 
-def main(): 
+def main():
   if "--help" in args or "-h" in args: help(); sys.exit(0)
   if not config.file_exists(): initial_setup()
   elif "--create" in args or "-C" in args: config.create_file(); sys.exit(0)
