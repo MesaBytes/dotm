@@ -33,12 +33,12 @@ class Config:
     with open(self.config_file_path, 'w') as configfile:
       parser.write(configfile)
     configfile.close()
-    print(f"[{color.light.green('+')}] Config file '% s' created" % self.config_file_path)
+    print(f"[{color.light.green('+')}] Config file '% s' is created" % self.config_file_path)
 
   def create_dir(self): 
     if self.dir_exists(): return
     makedirs(self.config_dir_path)
-    print(f"[{color.light.green('+')}] Directory '% s' created" % self.config_dir_path)
+    print(f"[{color.light.green('+')}] Directory '% s' is created" % self.config_dir_path)
 
   def set(self, section, option, value): 
     if not self.file_exists(): self.create_file()
