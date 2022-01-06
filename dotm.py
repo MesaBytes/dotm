@@ -2,7 +2,7 @@
 
 import sys
 from functions.manage_config import Config
-from functions.is_valid_path import isValidPath
+from functions.is_valid_dir import isValidDir
 from library.color import color
 
 args = sys.argv[1:]
@@ -14,7 +14,7 @@ def help():
 
 def initial_setup():
   dotfiles_path = str(input(f"Your dotfiles directory path ({color.bold('Absolute Path')}): "))
-  if isValidPath(dotfiles_path) == False:
+  if isValidDir(dotfiles_path) == False:
     print(f"{color.selected(dotfiles_path)} is {color.light.red('not a valid directory!')}")
     sys.exit(1)
   
