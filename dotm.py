@@ -10,7 +10,7 @@ args = sys.argv[1:]
 config = Config()
 dotfiles_list_manager = Dotfiles_list_manager()
 
-def help():
+def help_message():
   print(f'''usage: dotm [options]\n
 {color.light.yellow('options:')}
   {color.light.green('-h, --help')}\t help message
@@ -35,10 +35,9 @@ def initial_setup():
   sys.exit(0)
 
 def main():
-  if "--help" in args or "-h" in args: help(); sys.exit(0)
   if not config.file_exists() or not dotfiles_list_manager.file_exists(): initial_setup()
+  if "--help" in args or "-h" in args: help_message(); sys.exit(0)
   elif "--create" in args or "-C" in args: config.create_file(); sys.exit(0)
 
 if __name__ == "__main__":
   main()
-
