@@ -1,7 +1,8 @@
 import getpass
 import json
-from ext.is_valid import is_valid_file
 from os import path
+from ext.is_valid import is_valid_file
+from ext.color import color 
 
 username = getpass.getuser()
 class Dotfiles_list_manager:
@@ -18,6 +19,7 @@ class Dotfiles_list_manager:
       with open(self.dotfiles_list_path,'w') as f:
         json.dump([], f)
       f.close()
+      print(f"[{color.light.green('+')}] dotfiles list file '% s' is created" % self.dotfiles_list_path)
 
   def list(self): pass
   def add(self, source: str, dist: str): pass
