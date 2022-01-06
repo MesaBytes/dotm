@@ -1,6 +1,7 @@
 import getpass
 import json
 import uuid
+import sys
 from os import path
 from ext.is_valid import is_valid_file
 from ext.color import color 
@@ -23,6 +24,10 @@ class Dotfiles_list_manager:
       print(f"[{color.light.green('+')}] dotfiles list file '% s' is created" % self.dotfiles_list_path)
 
   def list(self): 
+    if not path.exists(self.dotfiles_list_path):
+      print(f"can't read from dotfiles.json!")
+      sys.exit(1)
+
     with open(self.dotfiles_list_path) as fp:
      list = json.load(fp)
       
