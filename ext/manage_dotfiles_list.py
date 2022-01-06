@@ -35,8 +35,8 @@ class Dotfiles_list_manager:
 
     with open(self.dotfiles_list_path, 'w') as json_file:
       json.dump(listobj, json_file, 
-                        indent=4,  
-                        separators=(',',': '))
+                  indent=2,  
+                  separators=(',',': '))
 
     fp.close()
     json_file.close()
