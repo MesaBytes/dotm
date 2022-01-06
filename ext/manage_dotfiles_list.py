@@ -22,7 +22,15 @@ class Dotfiles_list_manager:
       f.close()
       print(f"[{color.light.green('+')}] dotfiles list file '% s' is created" % self.dotfiles_list_path)
 
-  def list(self): pass
+  def list(self): 
+    with open(self.dotfiles_list_path) as fp:
+     list = json.load(fp)
+      
+    print("{:<32} {:<25} {:<10}".format('id','source','dist'))
+    for item in list:
+      print("{:<32} {:<25} {:<10}".format(item['id'], item['source'], item['dist']))
+    fp.close()
+  
   def add(self, source: str, dist: str): 
     with open(self.dotfiles_list_path) as fp:
      listobj = json.load(fp)
