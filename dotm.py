@@ -64,7 +64,11 @@ def help():
   print("--create, -C\t create new config file")
 
 def initial_setup():
-  dotfiles_path = str(input("Your dotfiles dir path (Absolute Path): "))
+  dotfiles_path = str(input("Your dotfiles directory path (Absolute Path): "))
+  if not path.exists(dotfiles_path):
+    print(f"'{dotfiles_path}' is not a valid directory!")
+    sys.exit(1)
+
   config.set("main", "dotfiles_path", dotfiles_path)
   sys.exit(0)
 
