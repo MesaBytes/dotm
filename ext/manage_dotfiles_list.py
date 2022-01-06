@@ -26,9 +26,9 @@ class Dotfiles_list_manager:
     with open(self.dotfiles_list_path) as fp:
      list = json.load(fp)
       
-    print("{:<32} {:<25} {:<10}".format('id','source','dist'))
+    print("{:<35} {:<25} {:<10}".format('id','source','dist'))
     for item in list:
-      print("{:<32} {:<25} {:<10}".format(item['id'], item['source'], item['dist']))
+      print("{:<35} {:<25} {:<10}".format(item['id'], item['source'], item['dist']))
     fp.close()
   
   def add(self, source: str, dist: str): 
