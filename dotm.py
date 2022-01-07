@@ -27,10 +27,10 @@ def help_message():
 def initial_setup():
   if not path.exists(config.config_file_path):
     dotfiles_path = str(input(f"Your dotfiles directory path ({color.bold('Absolute Path')}): "))
+    if "~/" in dotfiles_path: dotfiles_path = dotfiles_path.replace("~/", f"/home/{username}/")
     if not path.exists(dotfiles_path):
       print(f"{color.selected(dotfiles_path)} is {color.light.red('not a valid directory!')}")
       sys.exit(1)
-    if "~/" in dotfiles_path: dotfiles_path.replace("~/", f"/home/{username}/")
     if dotfiles_path[-1] != '/': dotfiles_path += '/'
     config.set("main", "dotfiles_path", dotfiles_path)
 
@@ -40,7 +40,14 @@ def initial_setup():
 def main():
   if not config.file_exists() or not dotfiles_list_manager.file_exists(): initial_setup()
   if "--help" in args or "-h" in args or len(args) == 0: help_message()
-  # elif "--change" in args or "-c" in args: config.create_file()
+  elif "--change" in args or "-c" in args: 
+    dotfiles_path = str(input(f"Your dotfiles directory path ({color.bold('Absolute Path')}): "))
+    if "~/" in dotfiles_path: dotfiles_path = dotfiles_path.replace("~/", f"/home/{username}/")
+    if not path.exists(dotfiles_path):
+      print(f"{color.selected(dotfiles_path)} is {color.light.red('not a valid directory!')}")
+      sys.exit(1)
+    if dotfiles_path[-1] != '/': dotfiles_path += '/'
+    config.set("main", "dotfiles_path", dotfiles_path)
   elif "--create" in args or "-C" in args: config.create_file()
   elif "--list" in args or "-l" in args: dotfiles_list_manager.list()
   elif "--empty-list" in args or "-e" in args: dotfiles_list_manager.empty_list()
