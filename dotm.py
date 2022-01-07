@@ -37,16 +37,14 @@ def initial_setup():
   if not path.exists(dotfiles_list_manager.dotfiles_list_path):
     dotfiles_list_manager.create_file()
 
-  sys.exit(0)
-
 def main():
   if not config.file_exists() or not dotfiles_list_manager.file_exists(): initial_setup()
-  if "--help" in args or "-h" in args or len(args) == 0: help_message(); sys.exit(0)
-  # elif "--change" in args or "-c" in args: config.create_file(); sys.exit(0)
-  elif "--create" in args or "-C" in args: config.create_file(); sys.exit(0)
-  elif "--list" in args or "-l" in args: dotfiles_list_manager.list(); sys.exit(0)
-  elif "--empty-list" in args or "-e" in args: dotfiles_list_manager.empty_list(); sys.exit(0)
-  # elif "--remove" in args or "-r" in args: dotfiles_list_manager.remove(); sys.exit(0)
+  if "--help" in args or "-h" in args or len(args) == 0: help_message()
+  # elif "--change" in args or "-c" in args: config.create_file()
+  elif "--create" in args or "-C" in args: config.create_file()
+  elif "--list" in args or "-l" in args: dotfiles_list_manager.list()
+  elif "--empty-list" in args or "-e" in args: dotfiles_list_manager.empty_list()
+  # elif "--remove" in args or "-r" in args: dotfiles_list_manager.remove()
   elif "--add" in args or "-a" in args: 
     for arg in args:
       if arg.startswith('-'):
@@ -56,7 +54,6 @@ def main():
     if dist[-1] != '/': dist += '/'
 
     dotfiles_list_manager.add(source, dist)
-    sys.exit(0)
 
 if __name__ == "__main__":
   main()
