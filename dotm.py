@@ -65,14 +65,14 @@ def main():
     for arg in args:
       if arg.startswith('-'):
         args.remove(arg)
-    source, dist = args 
+    source, destination = args 
     if "~/" in source: source.replace("~/", f"/home/{username}/")
     if source[-1] == '/': source = source[:-1]
-    if dist[-1] != '/': dist += "/"
+    if destination[-1] != '/': destination += "/"
     base_name = path.basename(source)
-    dist = dist+base_name
+    destination = destination+base_name
     
-    dotfiles_list_manager.add(source, dist)
+    dotfiles_list_manager.add(source, destination)
 
 if __name__ == "__main__":
   main()

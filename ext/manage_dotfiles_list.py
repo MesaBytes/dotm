@@ -37,13 +37,13 @@ class Dotfiles_list_manager:
     with open(self.dotfiles_list_path) as fp:
      list = json.load(fp)
       
-    print("{:<35} {:<25} {:<10}".format('id','source','dist'))
+    print("{:<35} {:<25} {:<10}".format('id','source','destination'))
     print("------------------------------------------------------------------------------")
     for item in list:
-      print("{:<35} {:<25} {:<10}".format(item['id'], item['source'], item['dist']))
+      print("{:<35} {:<25} {:<10}".format(item['id'], item['source'], item['destination']))
     fp.close()
   
-  def add(self, source: str, dist: str): 
+  def add(self, source: str, destination: str): 
     with open(self.dotfiles_list_path) as fp:
      listobj = json.load(fp)
     
@@ -56,7 +56,7 @@ class Dotfiles_list_manager:
     listobj.append({
       "id": uuid.uuid4().hex,
       "source": source,
-      "dist": dist
+      "destination": destination
     })
 
     with open(self.dotfiles_list_path, 'w') as json_file:
