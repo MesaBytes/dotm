@@ -49,7 +49,7 @@ def main():
     if dotfiles_path[-1] != '/': dotfiles_path += '/'
     config.set("main", "dotfiles_path", dotfiles_path)
   elif "--create" in args or "-C" in args: config.create_file()
-  elif "--list" in args or "-l" in args: dotfiles_list_manager.list()
+  elif "--list" in args or "-l" in args: dotfiles_list_manager.print_list()
   elif "--empty-list" in args or "-e" in args: dotfiles_list_manager.empty_list()
   elif "--remove" in args or "-r" in args: 
     for arg in args:
