@@ -69,6 +69,10 @@ def main():
       if arg.startswith('-'):
         args.remove(arg)
     source, destination = args 
+    if not path.exists(source):
+      print(f"[{color.light.red('!')}] {source} {color.light.red('does not exists!')}")
+      sys.exit(1)
+  
     if "~/" in source: source.replace("~/", f"/home/{username}/")
     if source[-1] == '/': source = source[:-1]
     if destination[-1] != '/': destination += "/"
