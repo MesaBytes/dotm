@@ -1,7 +1,5 @@
 ''' backup files '''
 
-# code source: https://stackoverflow.com/a/51088330/14102610
-
 import os
 import shutil
 import sys
