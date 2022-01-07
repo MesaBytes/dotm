@@ -1,7 +1,7 @@
 # work in progress!!
 dotfiles manager
 
-## Download the script
+## Install the script
 ```
 git clone https://github.com/Senpai-10/dotm.git
 cd dotm
