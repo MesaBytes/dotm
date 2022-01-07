@@ -29,7 +29,7 @@ class Dotfiles_list_manager:
       f.close()
       print(f"[{color.light.green('+')}] dotfiles list file '% s' is emptied" % self.dotfiles_list_path)
 
-  def list(self): 
+  def print_list(self): 
     if not path.exists(self.dotfiles_list_path):
       print(f"can't read from dotfiles.json!")
       sys.exit(1)
@@ -42,6 +42,9 @@ class Dotfiles_list_manager:
     for item in list:
       print("{:<35} {:<25} {:<10}".format(item['id'], item['source'], item['destination']))
     fp.close()
+
+  def get_dotfiles_list():
+    pass
   
   def add(self, source: str, destination: str): 
     with open(self.dotfiles_list_path) as fp:
