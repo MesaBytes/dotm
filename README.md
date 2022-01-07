@@ -3,6 +3,8 @@ dotfiles manager
 
 ## Download the script
 ```
-curl -OL https://raw.githubusercontent.com/Senpai-10/dotm/main/dotm
-chmod +x dotm
+git clone https://github.com/Senpai-10/dotm.git
+cd dotm
+make init
+make install
 ```
