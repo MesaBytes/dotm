@@ -6,6 +6,7 @@ from ext.manage_config import Config
 from os import path
 from ext.color import color
 from ext.manage_dotfiles_list import Dotfiles_list_manager
+from ext.core_dotm import backup
 
 username = getpass.getuser()
 args = sys.argv[1:]
@@ -16,6 +17,7 @@ def help_message():
   print(f'''usage: dotm [options]\n
 {color.light.yellow('options:')}
   {color.light.green('-h, --help')}\t help message
+  {color.light.green('-b, --backup')}\t backup files listed in dotfiles list
   {color.light.green('-c, --change')}\t change dotfiles directory 
   {color.light.green('-C, --create')}\t create new config file
   {color.light.green('-l, --list')}\t print dotfiles list
@@ -40,6 +42,7 @@ def initial_setup():
 def main():
   if not config.file_exists() or not dotfiles_list_manager.file_exists(): initial_setup()
   if "--help" in args or "-h" in args or len(args) == 0: help_message()
+  elif "-b" in args or "--backup" in args: backup()
   elif "--change" in args or "-c" in args: 
     dotfiles_path = str(input(f"Your dotfiles directory path ({color.bold('Absolute Path')}): "))
     if "~/" in dotfiles_path: dotfiles_path = dotfiles_path.replace("~/", f"/home/{username}/")
