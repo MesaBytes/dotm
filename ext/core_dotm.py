@@ -33,20 +33,20 @@ def getPERCECENTprogress(source_path, destination_path):
             sys.stdout.flush()
             time.sleep(.01)
 
-def CPprogress(SOURCE, DESTINATION):
-    if os.path.isdir(DESTINATION):
-        dst_file = os.path.join(DESTINATION, os.path.basename(SOURCE))
-    else: dst_file = DESTINATION
-    threading.Thread(name='progresso', target=getPERCECENTprogress, args=(SOURCE, dst_file)).start()
-    if os.path.isfile(SOURCE):
-      shutil.copy2(SOURCE, DESTINATION)
-    elif os.path.isdir(SOURCE):
-      shutil.copytree(SOURCE, DESTINATION)
+def CPprogress(source, destination):
+    if os.path.isdir(destination):
+        dst_file = os.path.join(destination, os.path.basename(source))
+    else: dst_file = destination
+    threading.Thread(name='progresso', target=getPERCECENTprogress, args=(source, dst_file)).start()
+    if os.path.isfile(source):
+      shutil.copy2(source, destination)
+    elif os.path.isdir(source):
+      shutil.copytree(source, destination)
       
     time.sleep(.02)
     sys.stdout.write('\r')
-    sys.stdout.write(("         {:d} / {:d} Mb   ".format((int(os.path.getsize(dst_file)/1000000)), (int(os.path.getsize(SOURCE)/1000000)))) +  (BOLD + finalCOLOR + "{:20s}".format('|'*20) + CEND) + ("   {:d}% ".format(100))) # BG progress 100%
-    #STYLE#sys.stdout.write(("         {:d} / {:d} Mb   ".format((int(os.path.getsize(dst_file)/1000000)), (int(os.path.getsize(SOURCE)/1000000)))) +  (BOLD + BlueCOLOR + "▐" + "{:s}{:s}".format(('█'*20), endBLOCK) + CEND) + ("   {:d}% ".format(100))) #STYLE# # BG progress 100%# closer to GUI but less compatible (no block bar with xterm) # requires utf8 coding header
+    sys.stdout.write(("         {:d} / {:d} Mb   ".format((int(os.path.getsize(dst_file)/1000000)), (int(os.path.getsize(source)/1000000)))) +  (BOLD + finalCOLOR + "{:20s}".format('|'*20) + CEND) + ("   {:d}% ".format(100))) # BG progress 100%
+    #STYLE#sys.stdout.write(("         {:d} / {:d} Mb   ".format((int(os.path.getsize(dst_file)/1000000)), (int(os.path.getsize(source)/1000000)))) +  (BOLD + BlueCOLOR + "▐" + "{:s}{:s}".format(('█'*20), endBLOCK) + CEND) + ("   {:d}% ".format(100))) #STYLE# # BG progress 100%# closer to GUI but less compatible (no block bar with xterm) # requires utf8 coding header
     sys.stdout.flush()
     print(" ")
     print(" ")
@@ -54,8 +54,8 @@ def CPprogress(SOURCE, DESTINATION):
 '''
 #Ex. Copy all files from root of the source dir to destination dir
 
-folderA = '/path/to/SOURCE' # SOURCE
-folderB = '/path/to/DESTINATION' # DESTINATION
+folderA = '/path/to/source' # source
+folderB = '/path/to/destination' # destination
 for FILE in os.listdir(folderA):
     if not os.path.isdir(os.path.join(folderA, FILE)):
         if os.path.exists(os.path.join(folderB, FILE)): continue # as we are using shutil.copy2() that overwrites destination, this skips existing files
