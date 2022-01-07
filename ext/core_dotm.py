@@ -33,15 +33,16 @@ def getPERCECENTprogress(source_path, destination_path):
             sys.stdout.flush()
             time.sleep(.01)
 
-def CPprogress(SOURCE, DESTINATION, type: ["file", "dir"]):
+def CPprogress(SOURCE, DESTINATION):
     if os.path.isdir(DESTINATION):
         dst_file = os.path.join(DESTINATION, os.path.basename(SOURCE))
     else: dst_file = DESTINATION
     threading.Thread(name='progresso', target=getPERCECENTprogress, args=(SOURCE, dst_file)).start()
-    if type == "file":
+    if os.path.isfile(SOURCE):
       shutil.copy2(SOURCE, DESTINATION)
-    elif type == "dir":
+    elif os.path.isdir(SOURCE):
       shutil.copytree(SOURCE, DESTINATION)
+      
     time.sleep(.02)
     sys.stdout.write('\r')
     sys.stdout.write(("         {:d} / {:d} Mb   ".format((int(os.path.getsize(dst_file)/1000000)), (int(os.path.getsize(SOURCE)/1000000)))) +  (BOLD + finalCOLOR + "{:20s}".format('|'*20) + CEND) + ("   {:d}% ".format(100))) # BG progress 100%
