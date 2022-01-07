@@ -7,6 +7,7 @@ import shutil
 import sys
 import threading
 import time
+from ext.manage_dotfiles_list import Dotfiles_list_manager
 
 progressCOLOR = '\033[38;5;33;48;5;236m' #\033[38;5;33;48;5;236m# copy inside '' for colored progressbar| orange:#\033[38;5;208;48;5;235m
 finalCOLOR =  '\033[38;5;33;48;5;33m' #\033[38;5;33;48;5;33m# copy inside '' for colored progressbar| orange:#\033[38;5;208;48;5;208m
@@ -49,4 +50,6 @@ def copy_files(source, destination):
 
 def backup():
   ''' loop through dotfiles list and backup all files '''
+  dotfiles_list_manager = Dotfiles_list_manager()
+  dotfiles_list = dotfiles_list_manager.get_dotfiles_list()
   
