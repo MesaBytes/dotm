@@ -53,7 +53,7 @@ def main():
       print("Please provide id!")
       sys.exit(1)
       
-    dotfiles_list_manager.remove(args[0])
+    dotfiles_list_manager.remove(args)
   elif "--add" in args or "-a" in args: 
     for arg in args:
       if arg.startswith('-'):
