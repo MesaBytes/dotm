@@ -66,16 +66,16 @@ class Dotfiles_list_manager:
     fp.close()
     json_file.close()
  
-  def remove(self, id: str): 
+  def remove(self, id_list): 
     with open(self.dotfiles_list_path) as fp:
      list = json.load(fp)
     
     if len(list) == 0: print("there is no items in dotfiles list")
-    
     for item in list:
-      if item["id"] == id:
-        list.remove(item)
-  
+      for i in range(len(id_list)):
+        if item["id"] == id_list[i]:
+          list.remove(item)
+
     with open(self.dotfiles_list_path, 'w') as json_file:
       json.dump(list, json_file, 
                   indent=2,  
