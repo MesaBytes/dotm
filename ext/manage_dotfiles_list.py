@@ -43,8 +43,15 @@ class Dotfiles_list_manager:
       print("{:<35} {:<25} {:<10}".format(item['id'], item['source'], item['destination']))
     fp.close()
 
-  def get_dotfiles_list():
-    pass
+  def get_dotfiles_list(self):
+    with open(self.dotfiles_list_path) as fp:
+     list = json.load(fp)
+    
+    if len(list) == 0: 
+      print("Dotfiles list is empty, Add some files with '--add' option!")
+      sys.exit(1)
+
+    return list
   
   def add(self, source: str, destination: str): 
     with open(self.dotfiles_list_path) as fp:
