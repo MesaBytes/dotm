@@ -29,7 +29,7 @@ def getPERCECENTprogress(source_path, destination_path):
       sys.stdout.flush()
       time.sleep(.01)
 
-def CPprogress(source, destination):
+def copy_files(source, destination):
   if os.path.isdir(destination):
     dst_file = os.path.join(destination, os.path.basename(source))
   else: dst_file = destination
@@ -46,3 +46,7 @@ def CPprogress(source, destination):
   sys.stdout.flush()
   print(" ")
   print(" ")
+
+def backup():
+  ''' loop through dotfiles list and backup all files '''
+  
