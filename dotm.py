@@ -44,7 +44,16 @@ def main():
   elif "--create" in args or "-C" in args: config.create_file()
   elif "--list" in args or "-l" in args: dotfiles_list_manager.list()
   elif "--empty-list" in args or "-e" in args: dotfiles_list_manager.empty_list()
-  # elif "--remove" in args or "-r" in args: dotfiles_list_manager.remove()
+  elif "--remove" in args or "-r" in args: 
+    for arg in args:
+      if arg.startswith('-'):
+        args.remove(arg)
+
+    if not args:
+      print("Please provide id!")
+      sys.exit(1)
+      
+    dotfiles_list_manager.remove(args[0])
   elif "--add" in args or "-a" in args: 
     for arg in args:
       if arg.startswith('-'):
