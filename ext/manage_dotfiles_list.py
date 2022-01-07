@@ -38,6 +38,7 @@ class Dotfiles_list_manager:
      list = json.load(fp)
       
     print("{:<35} {:<25} {:<10}".format('id','source','dist'))
+    print("------------------------------------------------------------------------------")
     for item in list:
       print("{:<35} {:<25} {:<10}".format(item['id'], item['source'], item['dist']))
     fp.close()
