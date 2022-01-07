@@ -60,8 +60,11 @@ def main():
         args.remove(arg)
     source, dist = args 
     if "~/" in source: source.replace("~/", f"/home/{username}/")
-    if dist[-1] != '/': dist += '/'
-
+    if source[-1] == '/': source = source[:-1]
+    if dist[-1] != '/': dist += "/"
+    base_name = path.basename(source)
+    dist = dist+base_name
+    
     dotfiles_list_manager.add(source, dist)
 
 if __name__ == "__main__":
