@@ -10,10 +10,14 @@ from ext.manage_config import Config
 from ext.color import color
 
 def copy_files(source, destination):
+  print(f"[{color.light.yellow('*')}] starting backup of {color.light.yellow(os.path.basename(source))}")
+
   if os.path.isfile(source):
     shutil.copy2(source, destination)
   elif os.path.isdir(source):
     shutil.copytree(source, destination, dirs_exist_ok=True)
+
+  print(f"[{color.light.blue('#')}] {color.light.green('Done')}")
 
 def backup():
   ''' loop through dotfiles list and backup all files '''
