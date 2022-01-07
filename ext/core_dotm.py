@@ -8,6 +8,8 @@ import sys
 import threading
 import time
 from ext.manage_dotfiles_list import Dotfiles_list_manager
+from ext.manage_config import Config
+from ext.color import color
 
 progressCOLOR = '\033[38;5;33;48;5;236m' #\033[38;5;33;48;5;236m# copy inside '' for colored progressbar| orange:#\033[38;5;208;48;5;235m
 finalCOLOR =  '\033[38;5;33;48;5;33m' #\033[38;5;33;48;5;33m# copy inside '' for colored progressbar| orange:#\033[38;5;208;48;5;208m
@@ -51,5 +53,18 @@ def copy_files(source, destination):
 def backup():
   ''' loop through dotfiles list and backup all files '''
   dotfiles_list_manager = Dotfiles_list_manager()
+  config = Config()
   dotfiles_list = dotfiles_list_manager.get_dotfiles_list()
-  
+  dotfiles_dir_path = config.get("main", "dotfiles_path")
+
+  for item in dotfiles_list:
+    item_source = item["source"]
+    item_copy_to_destination = item["destination"]
+    dirname = os.path.dirname(item_copy_to_destination)
+    if not os.path.exists(dotfiles_dir_path+dirname):
+      answer = input(f"{dotfiles_dir_path+dirname} does not exists, do you wan't to create it? [yes/no]")
+      if answer == "yes" or answer == "y":
+        os.mkdir(dotfiles_dir_path+dirname) 
+        print(f"[{color.light.green('+')}] Directory '% s' is created" % dirname)
+    
+    copy_files(item_source, dotfiles_dir_path+item_copy_to_destination)
