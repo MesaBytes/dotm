@@ -2,6 +2,7 @@ import getpass
 import json
 import uuid
 import sys
+from tabulate import tabulate
 from os import path
 from ext.is_valid import is_valid_file
 from ext.color import color 
@@ -37,10 +38,7 @@ class Dotfiles_list_manager:
     with open(self.dotfiles_list_path) as fp:
      list = json.load(fp)
       
-    print("{:<35} {:<25} {:<10}".format('id','source','destination'))
-    print("------------------------------------------------------------------------------")
-    for item in list:
-      print("{:<35} {:<25} {:<10}".format(item['id'], item['source'], item['destination']))
+    print(tabulate(list, headers="keys"))
     fp.close()
 
   def get_dotfiles_list(self):
