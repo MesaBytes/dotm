@@ -79,11 +79,14 @@ class Dotfiles_list_manager:
     fp.close()
     json_file.close()
  
-  def remove(self, id_list): 
+  def remove(self, id_list) -> int: 
     with open(self.dotfiles_list_path) as fp:
      list = json.load(fp)
     
-    if len(list) == 0: print("there is no items in dotfiles list")
+    if len(list) == 0: 
+      print(color.light.red("List is already empty!"))
+      return 1
+
     for item in list:
       for i in range(len(id_list)):
         if item["id"] == id_list[i]:
