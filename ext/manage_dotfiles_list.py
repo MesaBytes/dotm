@@ -30,17 +30,17 @@ class Dotfiles_list_manager:
       f.close()
       print(f"[{color.light.green('+')}] dotfiles list file '% s' is emptied" % self.dotfiles_list_path)
 
-  def print_list(self): 
+  def print_list(self) -> int: 
     if not path.exists(self.dotfiles_list_path):
       print(f"can't read from dotfiles.json!")
-      sys.exit(1)
+      return 1
 
     with open(self.dotfiles_list_path) as fp:
      list = json.load(fp)
       
     if len(list) == 0:
       print("List is empty!")
-      sys.exit(0)
+      return 1
 
     print(tabulate(list, headers="keys"))
     fp.close()
