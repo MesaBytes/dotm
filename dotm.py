@@ -40,7 +40,7 @@ def initial_setup():
   if not path.exists(dotfiles_list_manager.dotfiles_list_path):
     dotfiles_list_manager.create_file()
 
-def main():
+def main() -> int:
   def parse_args(option, alias): return '--'+option in args or '-'+alias in args
 
   if not config.file_exists() or not dotfiles_list_manager.file_exists(): initial_setup()
@@ -72,7 +72,15 @@ def main():
     for arg in args:
       if arg.startswith('-'):
         args.remove(arg)
-    source, destination = args 
+
+    try:
+      source = args[0]
+      destination = args[1]
+    except IndexError:
+      print(color.light.red("You need to provide a source and a destination!")+"\n")
+      print(f"{color.light.grey('Example')}: dotm --add {color.light.green('path/to/source')} {color.light.green('path/to/destination')}")
+      return 1
+
     if not path.exists(source):
       print(f"[{color.light.red('!')}] {source} {color.light.red('does not exists!')}")
       sys.exit(1)
@@ -86,4 +94,4 @@ def main():
     dotfiles_list_manager.add(source, destination)
 
 if __name__ == "__main__":
-  main()
+  sys.exit(main())
