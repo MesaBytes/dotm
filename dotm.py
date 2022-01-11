@@ -67,7 +67,7 @@ def main() -> int:
       print("Please provide id!")
       return 1
       
-    dotfiles_list_manager.remove(args)
+    return dotfiles_list_manager.remove(args)
   elif parse_args("add", "a"): 
     for arg in args:
       if arg.startswith('-'):
@@ -91,7 +91,7 @@ def main() -> int:
     base_name = path.basename(source)
     destination = destination+base_name
     
-    dotfiles_list_manager.add(source, destination)
+    return dotfiles_list_manager.add(source, destination)
 
 if __name__ == "__main__":
   sys.exit(main())
