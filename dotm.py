@@ -17,6 +17,7 @@ def help_message():
   print(f'''usage: dotm [options]\n
 {color.light.yellow('options:')}
   {color.light.green('-h, --help')}\t help message
+  {color.light.green('-v, --version')}\t print dotm version number
   {color.light.green('-b, --backup')}\t backup files listed in dotfiles list
   {color.light.green('-c, --change')}\t change dotfiles directory 
   {color.light.green('-C, --create')}\t create new config file
@@ -40,10 +41,13 @@ def initial_setup():
     dotfiles_list_manager.create_file()
 
 def main():
+  def parse_args(option, alias): return '--'+option in args or '-'+alias in args
+
   if not config.file_exists() or not dotfiles_list_manager.file_exists(): initial_setup()
-  if "--help" in args or "-h" in args or len(args) == 0: help_message()
-  elif "-b" in args or "--backup" in args: backup()
-  elif "--change" in args or "-c" in args: 
+  if parse_args("help", "h") or len(args) == 0: help_message()
+  elif parse_args("version", "v"): print("dotm 1.0.0")
+  elif parse_args("backup", "b"): backup()
+  elif parse_args("change", "c"): 
     dotfiles_path = str(input(f"Your dotfiles directory path ({color.bold('Absolute Path')}): "))
     if "~/" in dotfiles_path: dotfiles_path = dotfiles_path.replace("~/", f"/home/{username}/")
     if not path.exists(dotfiles_path):
@@ -51,10 +55,10 @@ def main():
       sys.exit(1)
     if dotfiles_path[-1] != '/': dotfiles_path += '/'
     config.set("main", "dotfiles_path", dotfiles_path)
-  elif "--create" in args or "-C" in args: config.create_file()
-  elif "--list" in args or "-l" in args: dotfiles_list_manager.print_list()
-  elif "--empty-list" in args or "-e" in args: dotfiles_list_manager.empty_list()
-  elif "--remove" in args or "-r" in args: 
+  elif parse_args("create", "C"): config.create_file()
+  elif parse_args("list", "l"): dotfiles_list_manager.print_list()
+  elif parse_args("empty-list", "e"): dotfiles_list_manager.empty_list()
+  elif parse_args("remove", "r"): 
     for arg in args:
       if arg.startswith('-'):
         args.remove(arg)
@@ -64,7 +68,7 @@ def main():
       sys.exit(1)
       
     dotfiles_list_manager.remove(args)
-  elif "--add" in args or "-a" in args: 
+  elif parse_args("add", "a"): 
     for arg in args:
       if arg.startswith('-'):
         args.remove(arg)
