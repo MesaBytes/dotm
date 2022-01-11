@@ -33,7 +33,7 @@ def initial_setup():
     if "~/" in dotfiles_path: dotfiles_path = dotfiles_path.replace("~/", f"/home/{username}/")
     if not path.exists(dotfiles_path):
       print(f"{color.selected(dotfiles_path)} is {color.light.red('not a valid directory!')}")
-      sys.exit(1)
+      return 1
     if dotfiles_path[-1] != '/': dotfiles_path += '/'
     config.set("main", "dotfiles_path", dotfiles_path)
 
@@ -52,7 +52,7 @@ def main() -> int:
     if "~/" in dotfiles_path: dotfiles_path = dotfiles_path.replace("~/", f"/home/{username}/")
     if not path.exists(dotfiles_path):
       print(f"{color.selected(dotfiles_path)} is {color.light.red('not a valid directory!')}")
-      sys.exit(1)
+      return 1
     if dotfiles_path[-1] != '/': dotfiles_path += '/'
     config.set("main", "dotfiles_path", dotfiles_path)
   elif parse_args("create", "C"): config.create_file()
@@ -65,7 +65,7 @@ def main() -> int:
 
     if not args:
       print("Please provide id!")
-      sys.exit(1)
+      return 1
       
     dotfiles_list_manager.remove(args)
   elif parse_args("add", "a"): 
@@ -83,7 +83,7 @@ def main() -> int:
 
     if not path.exists(source):
       print(f"[{color.light.red('!')}] {source} {color.light.red('does not exists!')}")
-      sys.exit(1)
+      return 1
   
     if "~/" in source: source.replace("~/", f"/home/{username}/")
     if source[-1] == '/': source = source[:-1]
