@@ -38,6 +38,10 @@ class Dotfiles_list_manager:
     with open(self.dotfiles_list_path) as fp:
      list = json.load(fp)
       
+    if len(list) == 0:
+      print("List is empty!")
+      sys.exit(0)
+
     print(tabulate(list, headers="keys"))
     fp.close()
 
@@ -62,7 +66,7 @@ class Dotfiles_list_manager:
           return False
 
     listobj.append({
-      "id": uuid.uuid4().hex,
+      "id": str(uuid.uuid4())[:16],
       "source": source,
       "destination": destination
     })
