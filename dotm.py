@@ -45,7 +45,7 @@ def main() -> int:
 
   if not config.file_exists() or not dotfiles_list_manager.file_exists(): initial_setup()
   if parse_args("help", "h") or len(args) == 0: help_message()
-  elif parse_args("version", "v"): print("dotm 1.0.0")
+  elif parse_args("version", "v"): print("dotm 1.1.0")
   elif parse_args("backup", "b"): backup()
   elif parse_args("change", "c"): 
     dotfiles_path = str(input(f"Your dotfiles directory path ({color.bold('Absolute Path')}): "))
