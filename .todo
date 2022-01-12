@@ -1,7 +1,7 @@
 add method (manage_dotfiles_list.py):
   [x] (add method) accept more than one source and take last arg as the destination
 
-  [] fix dublicite sources 
+  [] fix duplicate sources 
     Example
     python dotm.py -a /home/$USER/.config/alacritty /home/$USER/.config/alacritty /home/$USER/.config/htop .config
     This will add '/home/$USER/.config/alacritty' two times see 'manage_dotfiles_list.py' line 62 
