@@ -81,15 +81,13 @@ def main() -> int:
       print(f"{color.light.grey('Example')}: dotm --add {color.light.green('path/to/source')} {color.light.green('path/to/destination')}")
       return 1
 
-    # need clean up: remove the first for loop
-    for source in sources:
-      for i in range(len(sources)):
-        if not path.exists(sources[i]):
-          print(f"[{color.light.red('!')}] {source} {color.light.red('does not exists!')}")
-          return 1
-        
-        if "~/" in sources[i]: sources[i].replace("~/", f"/home/{username}/")
-        if sources[i][-1] == '/': sources[i] = sources[i][:-1]
+    for i in range(len(sources)):
+      if not path.exists(sources[i]):
+        print(f"[{color.light.red('!')}] {sources[i]} {color.light.red('does not exists!')}")
+        return 1
+      
+      if "~/" in sources[i]: sources[i].replace("~/", f"/home/{username}/")
+      if sources[i][-1] == '/': sources[i] = sources[i][:-1]
 
     if destination[-1] != '/': destination += "/"    
     return dotfiles_list_manager.add(sources, destination)
