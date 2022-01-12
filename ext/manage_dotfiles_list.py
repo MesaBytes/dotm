@@ -59,12 +59,16 @@ class Dotfiles_list_manager:
     with open(self.dotfiles_list_path) as fp:
      list = json.load(fp)
     
-    # if len(list) > 0:
-    #   for item in list:
-    #     for i in range(len(sources)):
-    #       if item["source"] == sources[i]:
-    #         print(sources[i] + color.light.red(" is already on the list!"))
-    #         return 1
+    error_list = []
+    if len(list) > 0:
+      for item in list:
+        for i in range(len(sources)):
+          if item["source"] == sources[i]:
+            error_list.append(sources[i])
+    if len(error_list) > 0: 
+      for i in range(len(error_list)):
+        print(error_list[i] + color.light.red(" is already on the list!"))
+      sys.exit(1)
 
     for i in range(len(sources)):
       list.append({
