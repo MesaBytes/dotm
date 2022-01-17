@@ -39,7 +39,7 @@ def backup():
 
   create_destination_folders(dotfiles_list)
 
-  with tqdm(total=len(dotfiles_list), desc="copying files") as bar:
+  with tqdm(total=len(dotfiles_list), desc="copying files", ascii=".#") as bar:
     for item in dotfiles_list:
       item_source = item["source"]
       item_copy_to_destination = item["destination"]
