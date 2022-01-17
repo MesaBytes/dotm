@@ -1,4 +1,4 @@
 uuid==1.30
 pyinstaller==4.7
 tabulate==0.8.9
-alive-progress==2.1.0
+tqdm==4.62.3

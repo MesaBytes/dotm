@@ -5,7 +5,7 @@ import shutil
 import sys
 import threading
 import time
-from alive_progress import alive_bar
+from tqdm import tqdm
 from ext.manage_dotfiles_list import Dotfiles_list_manager
 from ext.manage_config import Config
 from ext.color import color
@@ -39,11 +39,13 @@ def backup():
 
   create_destination_folders(dotfiles_list)
 
-  with alive_bar(len(dotfiles_list)) as bar:
+  with tqdm(total=len(dotfiles_list), 
+            bar_format="{l_bar}{bar} [ time left: {remaining} ]"
+          ) as bar:
     for item in dotfiles_list:
       item_source = item["source"]
       item_copy_to_destination = item["destination"]
       dirname = os.path.dirname(item_copy_to_destination)
 
       copy_files(item_source, os.path.join(dotfiles_dir_path, item_copy_to_destination))
-      bar()
+      bar.update(1)
