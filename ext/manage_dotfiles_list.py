@@ -43,6 +43,7 @@ class Dotfiles_list_manager:
       return 1
 
     print(tabulate(list, headers="keys"))
+    print(f'\n{color.light.green(str(len(list)))} {"item" if len(list) == 1 else "items"}.')
     fp.close()
 
   def get_dotfiles_list(self):
