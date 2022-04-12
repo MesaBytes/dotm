@@ -1,4 +1,3 @@
 {
-  "editor.tabSize": 2,
-  "todomd.defaultFile": "${workspaceFolder}/.todo.md"
+  "editor.tabSize": 4
 }
