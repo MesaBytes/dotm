@@ -15,6 +15,9 @@ const HIGHLIGHT_PAIR: i16 = 1;
 
 fn main() {
     initscr();
+    noecho();
+    curs_set(CURSOR_VISIBILITY::CURSOR_INVISIBLE);
+
     start_color();
     init_pair(REGULAR_PAIR, COLOR_WHITE, COLOR_BLACK);
     init_pair(HIGHLIGHT_PAIR, COLOR_BLACK, COLOR_WHITE);
@@ -53,15 +56,19 @@ fn main() {
             'q' => quit = true,
             'k' => {
                 if curr_idx == 0 {
+                    // Move cursor to the end of the list
                     curr_idx = paths.len() - 1;
                 } else {
+                    // Move up
                     curr_idx -= 1;
                 }
             }
             'j' => {
                 if curr_idx == paths.len() - 1 {
+                    // Move cursor to the start of the list
                     curr_idx = 0;
                 } else {
+                    // Move down
                     curr_idx += 1;
                 }
             }
