@@ -8,19 +8,19 @@
 // if no dotfiles.json is found create one in home dir
 
 extern crate ncurses;
-use ncurses::*;
+use ncurses as nc;
 
 const REGULAR_PAIR: i16 = 0;
 const HIGHLIGHT_PAIR: i16 = 1;
 
 fn main() {
-    initscr();
-    noecho();
-    curs_set(CURSOR_VISIBILITY::CURSOR_INVISIBLE);
+    nc::initscr();
+    nc::noecho();
+    nc::curs_set(nc::CURSOR_VISIBILITY::CURSOR_INVISIBLE);
 
-    start_color();
-    init_pair(REGULAR_PAIR, COLOR_WHITE, COLOR_BLACK);
-    init_pair(HIGHLIGHT_PAIR, COLOR_BLACK, COLOR_WHITE);
+    nc::start_color();
+    nc::init_pair(REGULAR_PAIR, nc::COLOR_WHITE, nc::COLOR_BLACK);
+    nc::init_pair(HIGHLIGHT_PAIR, nc::COLOR_BLACK, nc::COLOR_WHITE);
 
     let mut quit = false;
     let mut paths = vec![
@@ -42,15 +42,15 @@ fn main() {
                     REGULAR_PAIR
                 }
             };
-            attron(COLOR_PAIR(pair));
-            mv(index as i32, 0);
-            addstr(*path);
-            attr_off(COLOR_PAIR(pair));
+            nc::attron(nc::COLOR_PAIR(pair));
+            nc::mv(index as i32, 0);
+            nc::addstr(*path);
+            nc::attr_off(nc::COLOR_PAIR(pair));
         }
 
-        refresh();
+        nc::refresh();
 
-        let key = getch();
+        let key = nc::getch();
 
         match key as u8 as char {
             'q' => quit = true,
@@ -72,9 +72,13 @@ fn main() {
                     curr_idx += 1;
                 }
             }
+            'd' => {
+                paths.remove(curr_idx);
+                nc::clear();
+            }
             _ => {}
         }
     }
 
-    endwin();
+    nc::endwin();
 }
