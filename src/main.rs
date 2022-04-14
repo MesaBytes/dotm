@@ -20,21 +20,44 @@ struct Dotfile {
     destination: String,
 }
 
-fn save(dotfiles: &Vec<Dotfile>) {
+fn load(dotfiles: &mut Vec<Dotfile>) -> Result<(), std::io::Error> {
+    if std::path::Path::new("dotm.db").exists() == false {
+        std::fs::write("dotm.db", "")?;
+    }
+
+    let contents = std::fs::read_to_string("dotm.db")?;
+
+    for line in contents.lines() {
+        let dotfile: Vec<_> = line.split('\t').collect();
+
+        // (id, source, destination)
+        dotfiles.push(Dotfile {
+            id: dotfile[0].to_string(),
+            source: dotfile[1].to_string(),
+            destination: dotfile[2].to_string(),
+        });
+    }
+
+    Ok(())
+}
+
+fn save(dotfiles: &Vec<Dotfile>) -> Result<(), std::io::Error> {
     let mut contents = String::new();
 
     for dotfile in dotfiles.iter() {
         contents.push_str(&dotfile.id);
-        contents.push(':');
+        contents.push('\t');
         contents.push_str(&dotfile.source);
-        contents.push(':');
+        contents.push('\t');
         contents.push_str(&dotfile.destination);
         contents.push('\n');
     }
-    std::fs::write("dotm.db", contents);
+    std::fs::write("dotm.db", contents)?;
+
+    Ok(())
 }
 
-fn main() {
+fn main() -> Result<(), std::io::Error> {
     nc::initscr();
     nc::noecho();
     nc::curs_set(nc::CURSOR_VISIBILITY::CURSOR_INVISIBLE);
@@ -60,6 +83,8 @@ fn main() {
         source: String::from("/home/senpai/.bashrc"),
         destination: String::from("home/"),
     });
+
+    load(&mut dotfiles)?;
 
     while !quit {
         for (index, dotfile) in dotfiles.iter().enumerate() {
@@ -109,7 +134,7 @@ fn main() {
             }
             'd' => {
                 dotfiles.remove(curr_idx);
-                save(&dotfiles);
+                save(&dotfiles)?;
                 nc::clear();
             }
             _ => {}
@@ -117,4 +142,5 @@ fn main() {
     }
 
     nc::endwin();
+    Ok(())
 }
