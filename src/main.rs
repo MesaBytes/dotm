@@ -1,11 +1,7 @@
-// TODO: write add command
-// TODO: write remove command
-// TODO: write backup command
-// TODO: write list command
-// TODO: write empty-list command
-// TODO: write version command
-// TODO: write help command
-// if no dotfiles.json is found create one in home dir
+//  TODO    Add scrolling
+//  TODO    Add help option (--help, -h) [list options, list keybinds]
+//  TODO    Add a way to add new dotfiles to dotm.db
+//  TODO    Add backup option (--backup, -b) with progress bar!
 
 extern crate ncurses;
 use ncurses as nc;
@@ -67,7 +63,7 @@ fn main() -> Result<(), std::io::Error> {
     nc::init_pair(HIGHLIGHT_PAIR, nc::COLOR_BLACK, nc::COLOR_WHITE);
 
     let mut quit = false;
-    let mut dotfiles: Vec<Dotfile> = Vec::new();
+    let mut dotfiles = Vec::<Dotfile>::new();
     let mut curr_idx: usize = 0;
 
     let uuid = Uuid::new_v4();
