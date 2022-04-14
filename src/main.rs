@@ -4,6 +4,7 @@
 //  TODO    Add backup option (--backup, -b) with progress bar!
 
 extern crate ncurses;
+extern crate termsize;
 use ncurses as nc;
 use uuid::Uuid;
 
@@ -54,6 +55,8 @@ fn save(dotfiles: &Vec<Dotfile>) -> Result<(), std::io::Error> {
 }
 
 fn main() -> Result<(), std::io::Error> {
+    let term = termsize::get().unwrap();
+
     nc::initscr();
     nc::noecho();
     nc::curs_set(nc::CURSOR_VISIBILITY::CURSOR_INVISIBLE);
@@ -108,10 +111,10 @@ fn main() -> Result<(), std::io::Error> {
             nc::mv(0, 0);
             nc::addstr("List empty, --help for help");
         }
-        // nc::mv(4, 0);
-        // nc::addstr("q: quit\td: delete");
+        nc::mv(term.rows as i32 - 1, 0);
+        nc::addstr("q: quit\td: delete");
 
-        // nc::refresh();
+        nc::refresh();
 
         let key = nc::getch();
 
