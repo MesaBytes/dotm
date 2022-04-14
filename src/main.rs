@@ -108,7 +108,14 @@ fn main() -> Result<(), std::io::Error> {
             nc::attr_off(nc::COLOR_PAIR(pair));
         }
 
-        nc::refresh();
+        if dotfiles.len() == 0 {
+            nc::mv(0, 0);
+            nc::addstr("List empty, --help for help");
+        }
+        // nc::mv(4, 0);
+        // nc::addstr("q: quit\td: delete");
+
+        // nc::refresh();
 
         let key = nc::getch();
 
@@ -133,14 +140,21 @@ fn main() -> Result<(), std::io::Error> {
                 }
             }
             'd' => {
-                dotfiles.remove(curr_idx);
-                save(&dotfiles)?;
-                nc::clear();
+                if dotfiles.len() > 0 {
+                    dotfiles.remove(curr_idx);
+                    nc::clear();
+
+                    // Move cursor
+                    if curr_idx != 0 {
+                        curr_idx = curr_idx - 1;
+                    }
+                }
             }
             _ => {}
         }
     }
 
+    save(&dotfiles)?;
     nc::endwin();
     Ok(())
 }
