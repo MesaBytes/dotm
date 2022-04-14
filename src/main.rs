@@ -31,7 +31,7 @@ fn main() {
         "5",
         "6",
     ];
-    let mut curr_idx: usize = 1;
+    let mut curr_idx: usize = 0;
 
     while !quit {
         for (index, path) in paths.iter().enumerate() {
