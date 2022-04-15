@@ -87,6 +87,10 @@ fn main() -> Result<(), std::io::Error> {
 
     while !quit {
         for (index, dotfile) in dotfiles.iter().enumerate() {
+            if index == term.rows as usize - 2 {
+                break;
+            }
+
             let pair = {
                 if curr_idx == index {
                     HIGHLIGHT_PAIR
