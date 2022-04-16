@@ -7,9 +7,8 @@ use youchoose;
 fn main() -> Result<(), std::io::Error> {
     let args: Vec<String> = env::args().skip(1).collect();
     let mut dotfiles = Vec::<String>::new();
-    let home_dir = format!("/home/{}/", whoami::username());
-    let dotm_db_path = format!("{}.config/dotm/dotm.db", home_dir);
-    let dotm_config_path = format!("{}.config/dotm/dotm.conf", home_dir);
+    let dotm_db_path = format!("/home/{}/.config/dotm/dotm.db", whoami::username());
+    // let dotm_config_path = format!("/home/{}/.config/dotm/dotm.db", whoami::username());
 
     load(&dotm_db_path, &mut dotfiles)?;
 
@@ -53,7 +52,7 @@ Options:
 }
 
 fn load(path: &String, dotfiles: &mut Vec<String>) -> Result<(), std::io::Error> {
-    if std::path::Path::new(&path).exists() == false {
+    if std::path::Path::new(path).exists() == false {
         std::fs::write(path, "")?;
     }
 
