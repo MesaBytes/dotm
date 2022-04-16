@@ -8,8 +8,10 @@ fn main() -> Result<(), std::io::Error> {
     let args: Vec<String> = env::args().skip(1).collect();
     let mut dotfiles = Vec::<String>::new();
     let home_dir = format!("/home/{}/", whoami::username());
+    let dotm_db_path = format!("{}.config/dotm/dotm.db", home_dir);
+    let dotm_config_path = format!("{}.config/dotm/dotm.conf", home_dir);
 
-    load(&mut dotfiles)?;
+    load(&dotm_db_path, &mut dotfiles)?;
 
     if args.len() != 0 {
         if args[0] == "--add" || args[0] == "-a" {
@@ -46,16 +48,16 @@ Options:
         )
     }
 
-    save(&dotfiles)?;
+    save(&dotm_db_path, &dotfiles)?;
     Ok(())
 }
 
-fn load(dotfiles: &mut Vec<String>) -> Result<(), std::io::Error> {
-    if std::path::Path::new("dotm.db").exists() == false {
-        std::fs::write("dotm.db", "")?;
+fn load(path: &String, dotfiles: &mut Vec<String>) -> Result<(), std::io::Error> {
+    if std::path::Path::new(&path).exists() == false {
+        std::fs::write(path, "")?;
     }
 
-    let contents = std::fs::read_to_string("dotm.db")?;
+    let contents = std::fs::read_to_string(path)?;
 
     for line in contents.lines() {
         let dotfile: Vec<_> = line.split(':').collect();
@@ -66,7 +68,7 @@ fn load(dotfiles: &mut Vec<String>) -> Result<(), std::io::Error> {
     Ok(())
 }
 
-fn save(dotfiles: &Vec<String>) -> Result<(), std::io::Error> {
+fn save(path: &String, dotfiles: &Vec<String>) -> Result<(), std::io::Error> {
     let mut contents = String::new();
 
     for dotfile in dotfiles.iter() {
@@ -77,7 +79,7 @@ fn save(dotfiles: &Vec<String>) -> Result<(), std::io::Error> {
         contents.push_str(&dotfile[1]);
         contents.push('\n');
     }
-    std::fs::write("dotm.db", contents)?;
+    std::fs::write(path, contents)?;
 
     Ok(())
 }
