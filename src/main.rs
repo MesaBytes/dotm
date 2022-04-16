@@ -7,6 +7,8 @@ fn main() -> Result<(), std::io::Error> {
     let arg: Vec<String> = env::args().skip(1).collect();
     let mut dotfiles = Vec::<String>::new();
 
+    load(&mut dotfiles)?;
+
     if arg[0] == "--add" || arg[0] == "-a" {
         let source: String = input(&"source: ");
         let destination: String = input(&"destination: ");
@@ -22,17 +24,6 @@ Options:
     --help,   -h    Print this message"
         )
     }
-
-    // dotfiles.push(format!(
-    //     "{}\t{}\t{}",
-    //     Uuid::new_v4().to_string(),
-    //     "/home/senpai/books.db",
-    //     "home/"
-    // ));
-
-    // dotfiles.push();
-
-    load(&mut dotfiles)?;
 
     // let mut menu = youchoose::Menu::new(dotfiles.iter())
     //     .add_up_key('k' as i32)
