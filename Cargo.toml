@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 youchoose = "0.1.1"
+whoami = "1.2.1"
