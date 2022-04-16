@@ -4,14 +4,14 @@ use std::{env, process::exit};
 use youchoose;
 
 fn main() -> Result<(), std::io::Error> {
-    let arg: Vec<String> = env::args().skip(1).collect();
+    let args: Vec<String> = env::args().skip(1).collect();
     let mut dotfiles = Vec::<String>::new();
 
     load(&mut dotfiles)?;
 
-    if arg[0] == "--add" || arg[0] == "-a" {
-        let source: String = input(&"source: ");
-        let destination: String = input(&"destination: ");
+    if args[0] == "--add" || args[0] == "-a" {
+        let source = &args[1];
+        let destination = &args[2];
 
         if std::path::Path::new(&source).exists() == false {
             println!("[Error]\t{} does not exists!", source);
@@ -19,7 +19,18 @@ fn main() -> Result<(), std::io::Error> {
         }
 
         dotfiles.push(format!("{}\t{}", source, destination))
-    } else if arg[0] == "--help" || arg[0] == "-h" {
+    } else if args[0] == "--remove" || args[0] == "-r" {
+        let menu_list = dotfiles.clone();
+        let mut menu = youchoose::Menu::new(menu_list.iter())
+            .add_up_key('k' as i32)
+            .add_down_key('j' as i32);
+
+        let choice = menu.show();
+
+        if choice.len() != 0 {
+            dotfiles.remove(choice[0]);
+        }
+    } else if args[0] == "--help" || args[0] == "-h" {
         println!(
             "--- dotm help ---
 
@@ -29,12 +40,6 @@ Options:
     --help,   -h    Print this message"
         )
     }
-
-    // let mut menu = youchoose::Menu::new(dotfiles.iter())
-    //     .add_up_key('k' as i32)
-    //     .add_down_key('j' as i32);
-
-    // let choice = menu.show();
 
     save(&dotfiles)?;
     Ok(())
