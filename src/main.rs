@@ -6,6 +6,46 @@
 use uuid::Uuid;
 use youchoose;
 
+fn main() -> Result<(), std::io::Error> {
+    let mut dotfiles = Vec::<String>::new();
+
+    // dotfiles.push(format!(
+    //     "{}\t{}\t{}",
+    //     Uuid::new_v4().to_string(),
+    //     "/home/senpai/books.db",
+    //     "home/"
+    // ));
+
+    // dotfiles.push(format!(
+    //     "{}\t{}\t{}",
+    //     Uuid::new_v4().to_string(),
+    //     "/home/senpai/.bashrc",
+    //     "home/"
+    // ));
+
+    load(&mut dotfiles)?;
+
+    // let mut source = String::new();
+    // input("source: ", &mut source)?;
+    // let mut destination = String::new();
+    // input("destination: ", &mut destination)?;
+
+    // let mut menu = youchoose::Menu::new(dotfiles.iter())
+    //     .add_up_key('k' as i32)
+    //     .add_down_key('j' as i32);
+
+    // let choice = menu.show();
+
+    save(&dotfiles)?;
+    Ok(())
+}
+
+fn input(message: &str, input_string: &mut String) -> Result<(), std::io::Error> {
+    println!("{}", message);
+    std::io::stdin().read_line(input_string)?;
+    Ok(())
+}
+
 fn load(dotfiles: &mut Vec<String>) -> Result<(), std::io::Error> {
     if std::path::Path::new("dotm.db").exists() == false {
         std::fs::write("dotm.db", "")?;
@@ -57,43 +97,3 @@ fn save(dotfiles: &Vec<String>) -> Result<(), std::io::Error> {
 
 //     Ok(())
 // }
-
-fn main() -> Result<(), std::io::Error> {
-    let mut dotfiles = Vec::<String>::new();
-
-    // dotfiles.push(format!(
-    //     "{}\t{}\t{}",
-    //     Uuid::new_v4().to_string(),
-    //     "/home/senpai/books.db",
-    //     "home/"
-    // ));
-
-    // dotfiles.push(format!(
-    //     "{}\t{}\t{}",
-    //     Uuid::new_v4().to_string(),
-    //     "/home/senpai/.bashrc",
-    //     "home/"
-    // ));
-
-    load(&mut dotfiles)?;
-
-    let mut source = String::new();
-    input("source: ", &mut source)?;
-    let mut destination = String::new();
-    input("destination: ", &mut destination)?;
-
-    // let mut menu = youchoose::Menu::new(dotfiles.iter())
-    //     .add_up_key('k' as i32)
-    //     .add_down_key('j' as i32);
-
-    // let choice = menu.show();
-
-    save(&dotfiles)?;
-    Ok(())
-}
-
-fn input(message: &str, input_string: &mut String) -> Result<(), std::io::Error> {
-    println!("{}", message);
-    std::io::stdin().read_line(input_string)?;
-    Ok(())
-}
