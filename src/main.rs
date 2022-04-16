@@ -19,8 +19,7 @@ fn main() -> Result<(), std::io::Error> {
 Options:
     --add,    -a    Add new path
     --remove, -r    Remove path
-    --help,   -h    Print this message
-    awdawd"
+    --help,   -h    Print this message"
         )
     }
 
