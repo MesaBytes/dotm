@@ -3,11 +3,29 @@
 //  TODO    Add a way to add new dotfiles to dotm.db
 //  TODO    Add backup option (--backup, -b) with progress bar!
 
-use uuid::Uuid;
+use std::env;
 use youchoose;
 
 fn main() -> Result<(), std::io::Error> {
+    let arg: Vec<String> = env::args().skip(1).collect();
     let mut dotfiles = Vec::<String>::new();
+
+    if arg[0] == "--add" || arg[0] == "-a" {
+        let source: String = input(&"source: ");
+        let destination: String = input(&"destination: ");
+
+        dotfiles.push(format!("{}\t{}", source, destination))
+    } else if arg[0] == "--help" || arg[0] == "-h" {
+        println!(
+            "--- dotm help ---
+
+Options:
+    --add,    -a    Add new path
+    --remove, -r    Remove path
+    --help,   -h    Print this message
+    awdawd"
+        )
+    }
 
     // dotfiles.push(format!(
     //     "{}\t{}\t{}",
@@ -16,19 +34,9 @@ fn main() -> Result<(), std::io::Error> {
     //     "home/"
     // ));
 
-    // dotfiles.push(format!(
-    //     "{}\t{}\t{}",
-    //     Uuid::new_v4().to_string(),
-    //     "/home/senpai/.bashrc",
-    //     "home/"
-    // ));
+    // dotfiles.push();
 
     load(&mut dotfiles)?;
-
-    // let mut source = String::new();
-    // input("source: ", &mut source)?;
-    // let mut destination = String::new();
-    // input("destination: ", &mut destination)?;
 
     // let mut menu = youchoose::Menu::new(dotfiles.iter())
     //     .add_up_key('k' as i32)
@@ -40,10 +48,14 @@ fn main() -> Result<(), std::io::Error> {
     Ok(())
 }
 
-fn input(message: &str, input_string: &mut String) -> Result<(), std::io::Error> {
+fn input(message: &'_ impl std::fmt::Display) -> String {
+    // TODO     inline message and stdin
     println!("{}", message);
-    std::io::stdin().read_line(input_string)?;
-    Ok(())
+    let mut ret = String::new();
+    std::io::stdin()
+        .read_line(&mut ret)
+        .expect("Failed to read from stdin");
+    ret.trim().parse().expect("Failed to parse")
 }
 
 fn load(dotfiles: &mut Vec<String>) -> Result<(), std::io::Error> {
@@ -54,7 +66,9 @@ fn load(dotfiles: &mut Vec<String>) -> Result<(), std::io::Error> {
     let contents = std::fs::read_to_string("dotm.db")?;
 
     for line in contents.lines() {
-        dotfiles.push(line.to_string());
+        let dotfile: Vec<_> = line.split(':').collect();
+
+        dotfiles.push(format!("{}\t{}", &dotfile[0], &dotfile[1]));
     }
 
     Ok(())
@@ -69,10 +83,8 @@ fn save(dotfiles: &Vec<String>) -> Result<(), std::io::Error> {
         let dotfile: Vec<_> = dotfile.split('\t').collect();
 
         contents.push_str(&dotfile[0]);
-        contents.push('\t');
+        contents.push(':');
         contents.push_str(&dotfile[1]);
-        contents.push('\t');
-        contents.push_str(&dotfile[2]);
         contents.push('\n');
     }
     std::fs::write("dotm.db", contents)?;
