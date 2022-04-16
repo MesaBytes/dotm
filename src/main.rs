@@ -62,8 +62,6 @@ fn load(dotfiles: &mut Vec<String>) -> Result<(), std::io::Error> {
 }
 
 fn save(dotfiles: &Vec<String>) -> Result<(), std::io::Error> {
-    //  TODO    read line and spit with \t into 3
-
     let mut contents = String::new();
 
     for dotfile in dotfiles.iter() {
