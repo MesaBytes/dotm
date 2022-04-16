@@ -1,6 +1,6 @@
 //  TODO    Add backup option (--backup, -b) with progress bar!
 
-use std::env;
+use std::{env, process::exit};
 use youchoose;
 
 fn main() -> Result<(), std::io::Error> {
@@ -12,6 +12,11 @@ fn main() -> Result<(), std::io::Error> {
     if arg[0] == "--add" || arg[0] == "-a" {
         let source: String = input(&"source: ");
         let destination: String = input(&"destination: ");
+
+        if std::path::Path::new(&source).exists() == false {
+            println!("[Error]\t{} does not exists!", source);
+            exit(1);
+        }
 
         dotfiles.push(format!("{}\t{}", source, destination))
     } else if arg[0] == "--help" || arg[0] == "-h" {
