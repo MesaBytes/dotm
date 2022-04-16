@@ -45,16 +45,6 @@ Options:
     Ok(())
 }
 
-fn input(message: &'_ impl std::fmt::Display) -> String {
-    // TODO     inline message and stdin
-    println!("{}", message);
-    let mut ret = String::new();
-    std::io::stdin()
-        .read_line(&mut ret)
-        .expect("Failed to read from stdin");
-    ret.trim().parse().expect("Failed to parse")
-}
-
 fn load(dotfiles: &mut Vec<String>) -> Result<(), std::io::Error> {
     if std::path::Path::new("dotm.db").exists() == false {
         std::fs::write("dotm.db", "")?;
