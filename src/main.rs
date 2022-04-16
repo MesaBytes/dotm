@@ -6,12 +6,6 @@
 use uuid::Uuid;
 use youchoose;
 
-struct Dotfile {
-    id: String,
-    source: String,
-    destination: String,
-}
-
 fn load(dotfiles: &mut Vec<String>) -> Result<(), std::io::Error> {
     if std::path::Path::new("dotm.db").exists() == false {
         std::fs::write("dotm.db", "")?;
@@ -20,20 +14,7 @@ fn load(dotfiles: &mut Vec<String>) -> Result<(), std::io::Error> {
     let contents = std::fs::read_to_string("dotm.db")?;
 
     for line in contents.lines() {
-        let dotfile: Vec<_> = line.split('\t').collect();
-
-        // (id, source, destination)
-        // dotfiles.push(Dotfile {
-        //     id: dotfile[0].to_string(),
-        //     source: dotfile[1].to_string(),
-        //     destination: dotfile[2].to_string(),
-        // });
-        dotfiles.push(format!(
-            "{}\t{}\t{}",
-            dotfile[0].to_string(),
-            dotfile[1].to_string(),
-            dotfile[2].to_string()
-        ));
+        dotfiles.push(line.to_string());
     }
 
     Ok(())
@@ -42,54 +23,66 @@ fn load(dotfiles: &mut Vec<String>) -> Result<(), std::io::Error> {
 fn save(dotfiles: &Vec<String>) -> Result<(), std::io::Error> {
     //  TODO    read line and spit with \t into 3
 
-    // let mut contents = String::new();
+    let mut contents = String::new();
 
-    // for dotfile in dotfiles.iter() {
-    //     contents.push_str(&dotfile.id);
-    //     contents.push('\t');
-    //     contents.push_str(&dotfile.source);
-    //     contents.push('\t');
-    //     contents.push_str(&dotfile.destination);
-    //     contents.push('\n');
-    // }
-    // std::fs::write("dotm.db", contents)?;
+    for dotfile in dotfiles.iter() {
+        let dotfile: Vec<_> = dotfile.split('\t').collect();
+
+        contents.push_str(&dotfile[0]);
+        contents.push('\t');
+        contents.push_str(&dotfile[1]);
+        contents.push('\t');
+        contents.push_str(&dotfile[2]);
+        contents.push('\n');
+    }
+    std::fs::write("dotm.db", contents)?;
 
     Ok(())
 }
 
+// fn backup(dotfiles: &Vec<String>) -> Result<(), std::io::Error> {
+//     if std::path::Path::new("dotm.db").exists() == false {
+//         std::fs::write("dotm.db", "")?;
+//     }
+
+//     let contents = std::fs::read_to_string("dotm.db")?;
+
+//     for line in contents.lines() {
+//         let dotfile: Vec<_> = line.split('\t').collect();
+
+//         let id = dotfile[0].to_string();
+//         let source = dotfile[1].to_string();
+//         let destination = dotfile[2].to_string();
+//     }
+
+//     Ok(())
+// }
+
 fn main() -> Result<(), std::io::Error> {
     let mut dotfiles = Vec::<String>::new();
 
-    // dotfiles.push(Dotfile {
-    //     id: Uuid::new_v4().to_string(),
-    //     source: String::from("/home/senpai/books.db"),
-    //     destination: String::from("home/"),
-    // });
+    // dotfiles.push(format!(
+    //     "{}\t{}\t{}",
+    //     Uuid::new_v4().to_string(),
+    //     "/home/senpai/books.db",
+    //     "home/"
+    // ));
 
-    // dotfiles.push(Dotfile {
-    //     id: Uuid::new_v4().to_string(),
-    //     source: String::from("/home/senpai/.bashrc"),
-    //     destination: String::from("home/"),
-    // });
+    // dotfiles.push(format!(
+    //     "{}\t{}\t{}",
+    //     Uuid::new_v4().to_string(),
+    //     "/home/senpai/.bashrc",
+    //     "home/"
+    // ));
 
-    for i in 0..100 {
-        dotfiles.push(format!(
-            "{}\t{}\t{}",
-            Uuid::new_v4().to_string(),
-            i.to_string(),
-            i.to_string()
-        ));
-    }
-    // load(&mut dotfiles)?;
+    load(&mut dotfiles)?;
 
     let mut menu = youchoose::Menu::new(dotfiles.iter())
         .add_up_key('k' as i32)
         .add_down_key('j' as i32);
-    let choice = menu.show()[0];
 
-    println!("Index of the chosen item: {}", choice);
-    println!("item: {}", dotfiles[choice]);
+    let choice = menu.show();
 
-    // save(&dotfiles)?;
+    save(&dotfiles)?;
     Ok(())
 }
