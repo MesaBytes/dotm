@@ -1,6 +1,3 @@
-//  TODO    handle scrolling (maybe stop addstr if index == term.row and check if curr_idx is not the last index if not the last refresh and only show after term.row if you scroll up refresh again)
-//  TODO    Add help option (--help, -h) [list options, list keybinds]
-//  TODO    Add a way to add new dotfiles to dotm.db
 //  TODO    Add backup option (--backup, -b) with progress bar!
 
 use std::env;
