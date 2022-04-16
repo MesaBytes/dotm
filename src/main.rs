@@ -77,12 +77,23 @@ fn main() -> Result<(), std::io::Error> {
 
     load(&mut dotfiles)?;
 
-    let mut menu = youchoose::Menu::new(dotfiles.iter())
-        .add_up_key('k' as i32)
-        .add_down_key('j' as i32);
+    let mut source = String::new();
+    input("source: ", &mut source)?;
+    let mut destination = String::new();
+    input("destination: ", &mut destination)?;
 
-    let choice = menu.show();
+    // let mut menu = youchoose::Menu::new(dotfiles.iter())
+    //     .add_up_key('k' as i32)
+    //     .add_down_key('j' as i32);
+
+    // let choice = menu.show();
 
     save(&dotfiles)?;
+    Ok(())
+}
+
+fn input(message: &str, input_string: &mut String) -> Result<(), std::io::Error> {
+    println!("{}", message);
+    std::io::stdin().read_line(input_string)?;
     Ok(())
 }
