@@ -1,36 +1,41 @@
 //  TODO    Add backup option (--backup, -b) with progress bar!
 
 use std::{env, process::exit};
+use whoami;
 use youchoose;
 
 fn main() -> Result<(), std::io::Error> {
     let args: Vec<String> = env::args().skip(1).collect();
     let mut dotfiles = Vec::<String>::new();
+    let home_dir = format!("/home/{}/", whoami::username());
 
     load(&mut dotfiles)?;
 
-    if args[0] == "--add" || args[0] == "-a" {
-        let source = &args[1];
-        let destination = &args[2];
+    if args.len() != 0 {
+        if args[0] == "--add" || args[0] == "-a" {
+            let source = &args[1];
+            let destination = &args[2];
 
-        if std::path::Path::new(&source).exists() == false {
-            println!("[Error]\t{} does not exists!", source);
-            exit(1);
+            if std::path::Path::new(&source).exists() == false {
+                println!("[Error]\t{} does not exists!", source);
+                exit(1);
+            }
+
+            dotfiles.push(format!("{}\t{}", source, destination))
+        } else if args[0] == "--remove" || args[0] == "-r" {
+            let menu_list = dotfiles.clone();
+            let mut menu = youchoose::Menu::new(menu_list.iter())
+                .add_up_key('k' as i32)
+                .add_down_key('j' as i32);
+
+            let choice = menu.show();
+
+            if choice.len() != 0 {
+                dotfiles.remove(choice[0]);
+            }
         }
-
-        dotfiles.push(format!("{}\t{}", source, destination))
-    } else if args[0] == "--remove" || args[0] == "-r" {
-        let menu_list = dotfiles.clone();
-        let mut menu = youchoose::Menu::new(menu_list.iter())
-            .add_up_key('k' as i32)
-            .add_down_key('j' as i32);
-
-        let choice = menu.show();
-
-        if choice.len() != 0 {
-            dotfiles.remove(choice[0]);
-        }
-    } else if args[0] == "--help" || args[0] == "-h" {
+    }
+    if args.len() == 0 || args[0] == "--help" || args[0] == "-h" {
         println!(
             "--- dotm help ---
 
