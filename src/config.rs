@@ -33,8 +33,11 @@ impl Config {
         Ok(())
     }
 
-    pub fn get(&self, key: &str) -> &String {
-        return self.map.get(key).unwrap();
+    pub fn get(&self, key: &str) -> &str {
+        match self.map.get(key) {
+            Some(val) => val,
+            None => "",
+        }
     }
 
     fn save(&self) -> Result<(), std::io::Error> {
