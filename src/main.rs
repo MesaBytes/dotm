@@ -1,7 +1,7 @@
 //  TODO    Add backup option (--backup, -b) with progress bar!
 
 mod config;
-use std::{env, io::Read, process};
+use std::{env, process};
 use whoami;
 use youchoose;
 
@@ -13,7 +13,7 @@ fn main() -> Result<(), std::io::Error> {
 
     let mut config =
         config::Config::new(&dotm_config_path).expect("Failed initialization the database!");
-    let mut backup_path = config.get("backup_dir_path");
+    let backup_path = config.get("backup_dir_path");
 
     if backup_path.is_empty() {
         println!("No backup path is found!");
