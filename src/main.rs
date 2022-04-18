@@ -1,6 +1,7 @@
 //  TODO    Add backup option (--backup, -b) with progress bar!
 
-use std::{env, process::exit};
+mod config;
+use std::{env, io::Read, process};
 use whoami;
 use youchoose;
 
@@ -8,7 +9,28 @@ fn main() -> Result<(), std::io::Error> {
     let args: Vec<String> = env::args().skip(1).collect();
     let mut dotfiles = Vec::<String>::new();
     let dotm_db_path = format!("/home/{}/.config/dotm/dotm.db", whoami::username());
-    // let dotm_config_path = format!("/home/{}/.config/dotm/dotm.db", whoami::username());
+    let dotm_config_path = format!("/home/{}/.config/dotm/dotm.conf", whoami::username());
+
+    let mut config =
+        config::Config::new(&dotm_config_path).expect("Failed initialization the database!");
+    let mut backup_path = config.get("backup_dir_path");
+
+    if backup_path.is_empty() {
+        println!("No backup path is found!");
+        let mut path = String::new();
+
+        println!("Enter backup directory:");
+        std::io::stdin().read_line(&mut path).unwrap();
+
+        if std::path::Path::new(&path.trim()).exists() == false {
+            println!("'{}' is invalid path!", path.trim());
+            process::exit(1);
+        }
+
+        config.insert(String::from("backup_dir_path"), path.trim().to_string())?;
+
+        process::exit(0);
+    }
 
     load(&dotm_db_path, &mut dotfiles)?;
 
@@ -19,7 +41,7 @@ fn main() -> Result<(), std::io::Error> {
 
             if std::path::Path::new(&source).exists() == false {
                 println!("[Error]\t{} does not exists!", source);
-                exit(1);
+                process::exit(1);
             }
 
             dotfiles.push(format!("{}\t{}", source, destination))
