@@ -35,7 +35,7 @@ fn main() -> Result<(), std::io::Error> {
     load(&dotm_db_path, &mut dotfiles)?;
 
     if args.len() != 0 {
-        if args[0] == "--add" || args[0] == "-a" {
+        if args[0] == "add" || args[0] == "a" {
             let source = &args[1];
             let destination = &args[2];
 
@@ -45,7 +45,7 @@ fn main() -> Result<(), std::io::Error> {
             }
 
             dotfiles.push(format!("{}\t{}", source, destination))
-        } else if args[0] == "--remove" || args[0] == "-r" {
+        } else if args[0] == "remove" || args[0] == "r" {
             let menu_list = dotfiles.clone();
             let mut menu = youchoose::Menu::new(menu_list.iter())
                 .add_up_key('k' as i32)
@@ -62,10 +62,12 @@ fn main() -> Result<(), std::io::Error> {
         println!(
             "--- dotm help ---
 
+Command:
+    add,        a    Add new path
+    remove,     r    Remove path
+
 Options:
-    --add,    -a    Add new path
-    --remove, -r    Remove path
-    --help,   -h    Print this message"
+    --help,     -h   Print this message"
         )
     }
 
