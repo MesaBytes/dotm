@@ -70,15 +70,18 @@ fn main() -> Result<(), std::io::Error> {
     }
     if args.len() == 0 || args[0] == "--help" || args[0] == "-h" {
         println!(
-            "Usage: dotm [options] [command] 
-
-Command:
+            "{} dotm [options] [command]
+\t\tDotfiles manager
+{}
     add,        a    Add new path, [source, destination]
     remove,     r    Remove path
     list,       l    List dotfiles
 
-Options:
-    --help,     -h   Print this message"
+{}
+    --help,     -h   Print this message",
+            format!(" Usage ").on_bright_green().black().bold(),
+            format!(" Command ").on_bright_green().black().bold(),
+            format!(" Options ").on_bright_green().black().bold()
         )
     }
 
