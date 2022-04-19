@@ -1,6 +1,7 @@
 //  TODO    Add backup option (--backup, -b) with progress bar!
 
 mod config;
+mod input;
 use std::{env, process};
 use whoami;
 use youchoose;
@@ -17,10 +18,8 @@ fn main() -> Result<(), std::io::Error> {
 
     if backup_path.is_empty() {
         println!("No backup path is found!");
-        let mut path = String::new();
 
-        println!("Enter backup directory:");
-        std::io::stdin().read_line(&mut path).unwrap();
+        let path = input::input("Enter backup directory: ");
 
         if std::path::Path::new(&path.trim()).exists() == false {
             println!("'{}' is invalid path!", path.trim());
