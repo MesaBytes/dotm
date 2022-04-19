@@ -59,10 +59,10 @@ fn main() -> Result<(), std::io::Error> {
     }
     if args.len() == 0 || args[0] == "--help" || args[0] == "-h" {
         println!(
-            "--- dotm help ---
+            "Usage: dotm [options] [command] 
 
 Command:
-    add,        a    Add new path
+    add,        a    Add new path, [source, destination]
     remove,     r    Remove path
 
 Options:
