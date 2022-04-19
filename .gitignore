@@ -1,2 +1,5 @@
-dotm.db
-target/*
+/target/
+Cargo.lock
+**/*.rs.bk
+/target
+
