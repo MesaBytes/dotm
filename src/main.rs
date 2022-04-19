@@ -2,6 +2,7 @@
 
 mod config;
 mod input;
+use colored::Colorize;
 use std::{env, process};
 use whoami;
 use youchoose;
@@ -55,6 +56,16 @@ fn main() -> Result<(), std::io::Error> {
             if choice.len() != 0 {
                 dotfiles.remove(choice[0]);
             }
+        } else if args[0] == "list" || args[0] == "l" {
+            for dotfile in dotfiles.iter() {
+                let dotfile: Vec<_> = dotfile.split('\t').collect();
+
+                println!(
+                    "{}\t{}",
+                    dotfile[0].bright_green(),
+                    dotfile[1].bright_yellow()
+                );
+            }
         }
     }
     if args.len() == 0 || args[0] == "--help" || args[0] == "-h" {
@@ -64,6 +75,7 @@ fn main() -> Result<(), std::io::Error> {
 Command:
     add,        a    Add new path, [source, destination]
     remove,     r    Remove path
+    list,       l    List dotfiles
 
 Options:
     --help,     -h   Print this message"
