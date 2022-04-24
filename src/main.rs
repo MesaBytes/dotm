@@ -19,7 +19,7 @@ use std::fmt;
 impl fmt::Display for StructDotfile {
     // Display trait for Player
     fn fmt(&self, f: &mut std::fmt::Formatter) -> fmt::Result {
-        write!(f, "{}\t{}", self.source, self.destination)
+        write!(f, "{0: <35} {1}", self.source, self.destination)
     }
 }
 
