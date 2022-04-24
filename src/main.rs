@@ -4,6 +4,7 @@
 mod config;
 mod input;
 use colored::Colorize;
+use input::input;
 use std::{env, process};
 use whoami;
 use youchoose;
@@ -21,14 +22,14 @@ fn main() -> Result<(), std::io::Error> {
     if backup_path.is_empty() {
         println!("No backup path is found!");
 
-        let path = input::input("Enter backup directory: ");
+        let path = input("Enter backup directory: ");
 
-        if std::path::Path::new(&path.trim()).exists() == false {
-            println!("'{}' is invalid path!", path.trim());
+        if std::path::Path::new(&path).exists() == false {
+            println!("'{}' is invalid path!", path);
             process::exit(1);
         }
 
-        config.insert(String::from("backup_dir_path"), path.trim().to_string())?;
+        config.insert(String::from("backup_dir_path"), path.to_string())?;
 
         process::exit(0);
     }
