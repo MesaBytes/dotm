@@ -74,22 +74,18 @@ fn main() -> Result<(), std::io::Error> {
                 destination: destination.to_string(),
             })
         } else if args[0] == "remove" || args[0] == "r" {
-            let menu_list = dotfiles.clone();
+            let mut quit = false;
+            while quit == false && dotfiles.len() > 0 {
+                let menu_list = dotfiles.clone();
 
-            let mut menu = youchoose::Menu::new(menu_list.iter())
-                .add_up_key('k' as i32)
-                .add_down_key('j' as i32)
-                .multiselect();
+                let mut menu = youchoose::Menu::new(menu_list.iter())
+                    .add_up_key('k' as i32)
+                    .add_down_key('j' as i32);
 
-            let choices = menu.show();
+                let choices = menu.show();
 
-            if choices.len() != 0 {
-                // Check if something is selected
-                if choices.len() > 1 {
-                    // Loop choices and remove from dotfiles
-                    for choice_index in choices.iter() {
-                        dotfiles.remove(*choice_index);
-                    }
+                if choices.len() == 0 {
+                    quit = true;
                 } else {
                     dotfiles.remove(choices[0]);
                 }
