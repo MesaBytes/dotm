@@ -1,5 +1,4 @@
 //  TODO    Add backup option (--backup, -b) with progress bar!
-//  TODO    Better printing for list command
 
 mod config;
 mod input;
@@ -78,10 +77,14 @@ fn main() -> Result<(), std::io::Error> {
                 dotfiles.remove(choice[0]);
             }
         } else if args[0] == "list" || args[0] == "l" {
+            println!("{0: <35} {1}", "Source", "Destination");
+            println!("-----------------------------------------------------");
             for dotfile in dotfiles.iter() {
-                print!("{}", dotfile.source.bright_green());
-                print!("\t");
-                print!("{}\n", dotfile.destination.bright_yellow());
+                println!(
+                    "{0: <35} {1}",
+                    dotfile.source.bright_green(),
+                    dotfile.destination.bright_yellow()
+                );
             }
         }
     }
