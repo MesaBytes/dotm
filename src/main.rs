@@ -1,4 +1,5 @@
 //  TODO    Add backup option (--backup, -b) with progress bar!
+//  TODO    Better printing for list command
 
 mod config;
 mod input;
@@ -60,11 +61,9 @@ fn main() -> Result<(), std::io::Error> {
             for dotfile in dotfiles.iter() {
                 let dotfile: Vec<_> = dotfile.split('\t').collect();
 
-                println!(
-                    "{}\t{}",
-                    dotfile[0].bright_green(),
-                    dotfile[1].bright_yellow()
-                );
+                print!("{}", dotfile[0].bright_green());
+                print!("\t");
+                print!("{}\n", dotfile[1].bright_yellow());
             }
         }
     }
