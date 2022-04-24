@@ -143,7 +143,6 @@ fn load(path: &String, dotfiles: &mut Vec<StructDotfile>) -> Result<(), std::io:
     for line in contents.lines() {
         let dotfile: Vec<_> = line.split(':').collect();
 
-        // dotfiles.push(format!("{}\t{}", &dotfile[0], &dotfile[1]));
         dotfiles.push(StructDotfile {
             source: dotfile[0].to_string(),
             destination: dotfile[1].to_string(),
