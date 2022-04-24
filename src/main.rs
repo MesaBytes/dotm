@@ -74,6 +74,11 @@ fn main() -> Result<(), std::io::Error> {
                 destination: destination.to_string(),
             })
         } else if args[0] == "remove" || args[0] == "r" {
+            if dotfiles.is_empty() {
+                println!("List is empty!");
+                process::exit(0);
+            }
+
             let mut quit = false;
             while quit == false && dotfiles.len() > 0 {
                 let menu_list = dotfiles.clone();
@@ -91,6 +96,11 @@ fn main() -> Result<(), std::io::Error> {
                 }
             }
         } else if args[0] == "list" || args[0] == "l" {
+            if dotfiles.is_empty() {
+                println!("List is empty!");
+                process::exit(0);
+            }
+
             println!("{0: <35} {1}", "Source", "Destination");
             println!("-----------------------------------------------------");
             for dotfile in dotfiles.iter() {
