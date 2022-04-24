@@ -7,5 +7,5 @@ pub fn input(message: &str) -> String {
     std::io::stdin()
         .read_line(&mut ret)
         .expect("Failed to read from stdin");
-    ret
+    return ret.trim().to_string();
 }
