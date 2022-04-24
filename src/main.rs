@@ -2,6 +2,7 @@
 
 mod config;
 mod input;
+
 use colored::Colorize;
 use input::input;
 use std::{env, process};
@@ -52,12 +53,21 @@ fn main() -> Result<(), std::io::Error> {
     if args.len() != 0 {
         if args[0] == "add" || args[0] == "a" {
             let source = &args[1];
-            let destination = &args[2];
+            let mut destination = args[2].to_string();
 
             if std::path::Path::new(&source).exists() == false {
                 println!("[Error]\t{} does not exists!", source);
                 process::exit(1);
             }
+
+            let paths: Vec<_> = source.split("/").collect();
+            let file = paths[paths.len() - 1];
+
+            if !destination.ends_with("/") {
+                destination.push('/');
+            }
+
+            destination.push_str(file);
 
             dotfiles.push(StructDotfile {
                 source: source.to_string(),
