@@ -78,12 +78,21 @@ fn main() -> Result<(), std::io::Error> {
 
             let mut menu = youchoose::Menu::new(menu_list.iter())
                 .add_up_key('k' as i32)
-                .add_down_key('j' as i32);
+                .add_down_key('j' as i32)
+                .multiselect();
 
-            let choice = menu.show();
+            let choices = menu.show();
 
-            if choice.len() != 0 {
-                dotfiles.remove(choice[0]);
+            if choices.len() != 0 {
+                // Check if something is selected
+                if choices.len() > 1 {
+                    // Loop choices and remove from dotfiles
+                    for choice_index in choices.iter() {
+                        dotfiles.remove(*choice_index);
+                    }
+                } else {
+                    dotfiles.remove(choices[0]);
+                }
             }
         } else if args[0] == "list" || args[0] == "l" {
             println!("{0: <35} {1}", "Source", "Destination");
