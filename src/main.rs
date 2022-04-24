@@ -9,9 +9,24 @@ use std::{env, process};
 use whoami;
 use youchoose;
 
+#[derive(Clone)]
+struct StructDotfile {
+    source: String,
+    destination: String,
+}
+
+use std::fmt;
+
+impl fmt::Display for StructDotfile {
+    // Display trait for Player
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> fmt::Result {
+        write!(f, "{}\t{}", self.source, self.destination)
+    }
+}
+
 fn main() -> Result<(), std::io::Error> {
     let args: Vec<String> = env::args().skip(1).collect();
-    let mut dotfiles = Vec::<String>::new();
+    let mut dotfiles = Vec::<StructDotfile>::new();
     let dotm_db_path = format!("/home/{}/.config/dotm/dotm.db", whoami::username());
     let dotm_config_path = format!("/home/{}/.config/dotm/dotm.conf", whoami::username());
 
@@ -46,9 +61,13 @@ fn main() -> Result<(), std::io::Error> {
                 process::exit(1);
             }
 
-            dotfiles.push(format!("{}\t{}", source, destination))
+            dotfiles.push(StructDotfile {
+                source: source.to_string(),
+                destination: destination.to_string(),
+            })
         } else if args[0] == "remove" || args[0] == "r" {
             let menu_list = dotfiles.clone();
+
             let mut menu = youchoose::Menu::new(menu_list.iter())
                 .add_up_key('k' as i32)
                 .add_down_key('j' as i32);
@@ -60,11 +79,9 @@ fn main() -> Result<(), std::io::Error> {
             }
         } else if args[0] == "list" || args[0] == "l" {
             for dotfile in dotfiles.iter() {
-                let dotfile: Vec<_> = dotfile.split('\t').collect();
-
-                print!("{}", dotfile[0].bright_green());
+                print!("{}", dotfile.source.bright_green());
                 print!("\t");
-                print!("{}\n", dotfile[1].bright_yellow());
+                print!("{}\n", dotfile.destination.bright_yellow());
             }
         }
     }
@@ -89,7 +106,7 @@ fn main() -> Result<(), std::io::Error> {
     Ok(())
 }
 
-fn load(path: &String, dotfiles: &mut Vec<String>) -> Result<(), std::io::Error> {
+fn load(path: &String, dotfiles: &mut Vec<StructDotfile>) -> Result<(), std::io::Error> {
     if std::path::Path::new(path).exists() == false {
         std::fs::write(path, "")?;
     }
@@ -99,21 +116,23 @@ fn load(path: &String, dotfiles: &mut Vec<String>) -> Result<(), std::io::Error>
     for line in contents.lines() {
         let dotfile: Vec<_> = line.split(':').collect();
 
-        dotfiles.push(format!("{}\t{}", &dotfile[0], &dotfile[1]));
+        // dotfiles.push(format!("{}\t{}", &dotfile[0], &dotfile[1]));
+        dotfiles.push(StructDotfile {
+            source: dotfile[0].to_string(),
+            destination: dotfile[1].to_string(),
+        });
     }
 
     Ok(())
 }
 
-fn save(path: &String, dotfiles: &Vec<String>) -> Result<(), std::io::Error> {
+fn save(path: &String, dotfiles: &Vec<StructDotfile>) -> Result<(), std::io::Error> {
     let mut contents = String::new();
 
     for dotfile in dotfiles.iter() {
-        let dotfile: Vec<_> = dotfile.split('\t').collect();
-
-        contents.push_str(&dotfile[0]);
+        contents.push_str(&dotfile.source);
         contents.push(':');
-        contents.push_str(&dotfile[1]);
+        contents.push_str(&dotfile.destination);
         contents.push('\n');
     }
     std::fs::write(path, contents)?;
@@ -121,7 +140,7 @@ fn save(path: &String, dotfiles: &Vec<String>) -> Result<(), std::io::Error> {
     Ok(())
 }
 
-// fn backup(dotfiles: &Vec<String>) -> Result<(), std::io::Error> {
+// fn backup(dotfiles: &Vec<Struct_Dotfile>) -> Result<(), std::io::Error> {
 //     if std::path::Path::new("dotm.db").exists() == false {
 //         std::fs::write("dotm.db", "")?;
 //     }
