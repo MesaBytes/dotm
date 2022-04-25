@@ -1,9 +1,11 @@
 mod config;
+mod help;
 mod input;
 extern crate pbr;
 
 use colored::Colorize;
 use dircpy::CopyBuilder;
+use help::help;
 use input::input;
 use notify_rust::Notification;
 use pbr::ProgressBar;
@@ -143,22 +145,7 @@ fn main() -> Result<(), std::io::Error> {
         }
     }
     if args.len() == 0 || args[0] == "--help" || args[0] == "-h" {
-        println!(
-            "{} dotm [options] [command]
-\t\tDotfiles manager
-{}
-    add <s> <d>  a   Add new dotfile
-    remove       r   Remove dotfile
-    list         l   List dotfiles
-    backup       b   Backup dotfiles
-
-{}
-    --help,     -h   Print this message
-    --version   -v   Print version",
-            format!(" Usage ").on_bright_green().black().bold(),
-            format!(" Command ").on_bright_green().black().bold(),
-            format!(" Options ").on_bright_green().black().bold()
-        )
+        help();
     }
 
     save(&dotm_db_path, &dotfiles)?;
