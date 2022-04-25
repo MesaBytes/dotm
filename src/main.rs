@@ -86,6 +86,14 @@ fn main() -> Result<(), std::io::Error> {
                 process::exit(1);
             }
 
+            // Check for duplicate entries
+            for dotfile in dotfiles.iter() {
+                if source == dotfile.source {
+                    println!("{} already exists!", source.bright_red());
+                    process::exit(1);
+                }
+            }
+
             let paths: Vec<_> = source.split("/").collect();
             let file = paths[paths.len() - 1];
             let mut full_destination = backup_path;
