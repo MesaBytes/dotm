@@ -22,6 +22,8 @@ impl fmt::Display for StructDotfile {
     }
 }
 
+const VERSION: &str = env!("CARGO_PKG_VERSION");
+
 fn main() -> Result<(), std::io::Error> {
     let args: Vec<String> = env::args().skip(1).collect();
     let mut dotfiles = Vec::<StructDotfile>::new();
@@ -113,6 +115,8 @@ fn main() -> Result<(), std::io::Error> {
             }
         } else if args[0] == "backup" || args[0] == "b" {
             backup(&dotfiles)?;
+        } else if args[0] == "--version" || args[0] == "-v" {
+            println!("Version: {}", VERSION.bright_yellow());
         }
     }
     if args.len() == 0 || args[0] == "--help" || args[0] == "-h" {
@@ -120,13 +124,14 @@ fn main() -> Result<(), std::io::Error> {
             "{} dotm [options] [command]
 \t\tDotfiles manager
 {}
-    add <source> <dest>  a   Add new path
-    remove               r   Remove path
-    list                 l   List dotfiles
-    backup               b   Backup files
+    add <s> <d>  a   Add new dotfile
+    remove       r   Remove dotfile
+    list         l   List dotfiles
+    backup       b   Backup dotfiles
 
 {}
-    --help,     -h   Print this message",
+    --help,     -h   Print this message
+    --version   -v   Print version",
             format!(" Usage ").on_bright_green().black().bold(),
             format!(" Command ").on_bright_green().black().bold(),
             format!(" Options ").on_bright_green().black().bold()
