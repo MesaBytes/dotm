@@ -53,11 +53,31 @@ fn main() -> Result<(), std::io::Error> {
 
     if args.len() != 0 {
         if args[0] == "add" || args[0] == "a" {
-            let source = &args[1];
-            let mut destination = args[2].to_string();
+            let source = match &args.get(1) {
+                Some(val) => val,
+                None => "",
+            };
+
+            let mut destination = match &args.get(2) {
+                Some(val) => val.to_string(),
+                None => "".to_string(),
+            };
+
+            if source.is_empty() && destination.is_empty() {
+                println!(
+                    "Missing {} and {}",
+                    format!("source").bright_red(),
+                    format!("destination").bright_red()
+                );
+                process::exit(1);
+            }
+            if destination.is_empty() {
+                println!("Missing {}", format!("destination").bright_red());
+                process::exit(1);
+            }
 
             if std::path::Path::new(&source).exists() == false {
-                println!("[Error]\t{} does not exists!", source);
+                println!("{} does not exists!", source.bright_red());
                 process::exit(1);
             }
 
