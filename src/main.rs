@@ -1,9 +1,8 @@
-//  TODO    Add backup option (--backup, -b) with progress bar!
-
 mod config;
 mod input;
 
 use colored::Colorize;
+use dircpy::CopyBuilder;
 use input::input;
 use std::{env, process};
 use whoami;
@@ -112,6 +111,8 @@ fn main() -> Result<(), std::io::Error> {
                     dotfile.destination.bright_yellow()
                 );
             }
+        } else if args[0] == "backup" || args[0] == "b" {
+            backup(&dotfiles)?;
         }
     }
     if args.len() == 0 || args[0] == "--help" || args[0] == "-h" {
@@ -119,9 +120,10 @@ fn main() -> Result<(), std::io::Error> {
             "{} dotm [options] [command]
 \t\tDotfiles manager
 {}
-    add,        a    Add new path, [source, destination]
-    remove,     r    Remove path
-    list,       l    List dotfiles
+    add <source> <dest>  a   Add new path
+    remove               r   Remove path
+    list                 l   List dotfiles
+    backup               b   Backup files
 
 {}
     --help,     -h   Print this message",
@@ -168,20 +170,26 @@ fn save(path: &String, dotfiles: &Vec<StructDotfile>) -> Result<(), std::io::Err
     Ok(())
 }
 
-// fn backup(dotfiles: &Vec<Struct_Dotfile>) -> Result<(), std::io::Error> {
-//     if std::path::Path::new("dotm.db").exists() == false {
-//         std::fs::write("dotm.db", "")?;
-//     }
+fn backup(dotfiles: &Vec<StructDotfile>) -> Result<(), std::io::Error> {
+    // TODO add progress bar
+    for dotfile in dotfiles.iter() {
+        if std::path::Path::new(&dotfile.source).is_file() {
+            // TODO: Find better names :(
+            let mut dests: Vec<_> = dotfile.destination.split("/").collect();
 
-//     let contents = std::fs::read_to_string("dotm.db")?;
+            // Remove file remove vector
+            dests.pop();
 
-//     for line in contents.lines() {
-//         let dotfile: Vec<_> = line.split('\t').collect();
+            std::fs::create_dir_all(dests.join("/"))?;
 
-//         let id = dotfile[0].to_string();
-//         let source = dotfile[1].to_string();
-//         let destination = dotfile[2].to_string();
-//     }
+            std::fs::copy(&dotfile.source, &dotfile.destination)?;
+        } else if std::path::Path::new(&dotfile.source).is_dir() {
+            CopyBuilder::new(dotfile.source.to_owned(), dotfile.destination.to_owned())
+                .overwrite_if_newer(true)
+                .overwrite_if_size_differs(true)
+                .run()?;
+        }
+    }
 
-//     Ok(())
-// }
+    Ok(())
+}
