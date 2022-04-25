@@ -31,7 +31,7 @@ fn main() -> Result<(), std::io::Error> {
 
     let mut config =
         config::Config::new(&dotm_config_path).expect("Failed initialization the database!");
-    let backup_path = config.get("backup_dir_path");
+    let backup_path = config.get("backup_dir_path").to_string();
 
     if backup_path.is_empty() {
         println!("No backup path is found!");
@@ -62,16 +62,18 @@ fn main() -> Result<(), std::io::Error> {
 
             let paths: Vec<_> = source.split("/").collect();
             let file = paths[paths.len() - 1];
+            let mut full_destination = backup_path;
 
             if !destination.ends_with("/") {
                 destination.push('/');
             }
 
             destination.push_str(file);
+            full_destination.push_str(&destination);
 
             dotfiles.push(StructDotfile {
                 source: source.to_string(),
-                destination: destination.to_string(),
+                destination: full_destination,
             })
         } else if args[0] == "remove" || args[0] == "r" {
             if dotfiles.is_empty() {
