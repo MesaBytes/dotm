@@ -5,6 +5,7 @@ extern crate pbr;
 use colored::Colorize;
 use dircpy::CopyBuilder;
 use input::input;
+use notify_rust::Notification;
 use pbr::ProgressBar;
 use std::{env, process};
 use whoami;
@@ -223,6 +224,12 @@ fn backup(dotfiles: &Vec<StructDotfile>) -> Result<(), std::io::Error> {
 
         pb.inc();
     }
+
+    Notification::new()
+        .summary("dotm")
+        .body("Done backing up dotfiles!")
+        .show()
+        .expect("Failed to send notification");
 
     Ok(())
 }
