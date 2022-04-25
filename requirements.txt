@@ -1,4 +1,0 @@
-uuid==1.30
-pyinstaller==4.7
-tabulate==0.8.9
-tqdm==4.62.3
