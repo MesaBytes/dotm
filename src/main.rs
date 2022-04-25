@@ -1,9 +1,11 @@
 mod config;
 mod input;
+extern crate pbr;
 
 use colored::Colorize;
 use dircpy::CopyBuilder;
 use input::input;
+use pbr::ProgressBar;
 use std::{env, process};
 use whoami;
 use youchoose;
@@ -196,8 +198,12 @@ fn save(path: &String, dotfiles: &Vec<StructDotfile>) -> Result<(), std::io::Err
 }
 
 fn backup(dotfiles: &Vec<StructDotfile>) -> Result<(), std::io::Error> {
-    // TODO add progress bar
-    for dotfile in dotfiles.iter() {
+    let count = dotfiles.len();
+    let mut pb = ProgressBar::new(count as u64);
+
+    for i in 0..count {
+        let dotfile = &dotfiles[i];
+
         if std::path::Path::new(&dotfile.source).is_file() {
             // TODO: Find better names :(
             let mut dests: Vec<_> = dotfile.destination.split("/").collect();
@@ -214,6 +220,8 @@ fn backup(dotfiles: &Vec<StructDotfile>) -> Result<(), std::io::Error> {
                 .overwrite_if_size_differs(true)
                 .run()?;
         }
+
+        pb.inc();
     }
 
     Ok(())
