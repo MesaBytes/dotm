@@ -196,6 +196,7 @@ fn save(path: &String, dotfiles: &Vec<StructDotfile>) -> Result<(), std::io::Err
 fn backup(dotfiles: &Vec<StructDotfile>) -> Result<(), std::io::Error> {
     let count = dotfiles.len();
     let mut pb = ProgressBar::new(count as u64);
+    pb.format("[=> ]");
 
     for i in 0..count {
         let dotfile = &dotfiles[i];
