@@ -200,6 +200,10 @@ fn backup(dotfiles: &Vec<StructDotfile>) -> Result<(), std::io::Error> {
 
     for i in 0..count {
         let dotfile = &dotfiles[i];
+        let source_split: Vec<_> = dotfile.source.split("/").collect();
+        let file = source_split[source_split.len() - 1];
+
+        pb.message(&format!("{} ", &file.bright_green()));
 
         if std::path::Path::new(&dotfile.source).is_file() {
             // TODO: Find better names :(
