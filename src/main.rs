@@ -1,22 +1,25 @@
 mod args;
+mod backup;
 mod config;
 mod input;
+mod load;
+mod save;
 extern crate pbr;
 
 use args::*;
+use backup::backup;
 use clap::Parser;
 use colored::Colorize;
-use dircpy::CopyBuilder;
 use input::input;
-use notify_rust::Notification;
-use pbr::ProgressBar;
+use load::load;
+use save::save;
 use std::fmt;
 use std::process::exit;
 use whoami;
 use youchoose;
 
 #[derive(Clone)]
-struct StructDotfile {
+pub struct StructDotfile {
     source: String,
     destination: String,
 }
@@ -137,78 +140,4 @@ fn main() {
     }
 
     save(&dotm_db_path, &dotfiles).expect("Failed to save the database");
-}
-
-fn load(path: &String, dotfiles: &mut Vec<StructDotfile>) -> Result<(), std::io::Error> {
-    if std::path::Path::new(path).exists() == false {
-        std::fs::write(path, "")?;
-    }
-
-    let contents = std::fs::read_to_string(path)?;
-
-    for line in contents.lines() {
-        let dotfile: Vec<_> = line.split(':').collect();
-
-        dotfiles.push(StructDotfile {
-            source: dotfile[0].to_string(),
-            destination: dotfile[1].to_string(),
-        });
-    }
-
-    Ok(())
-}
-
-fn save(path: &String, dotfiles: &Vec<StructDotfile>) -> Result<(), std::io::Error> {
-    let mut contents = String::new();
-
-    for dotfile in dotfiles.iter() {
-        contents.push_str(&dotfile.source);
-        contents.push(':');
-        contents.push_str(&dotfile.destination);
-        contents.push('\n');
-    }
-    std::fs::write(path, contents)?;
-
-    Ok(())
-}
-
-fn backup(dotfiles: &Vec<StructDotfile>) -> Result<(), std::io::Error> {
-    let count = dotfiles.len();
-    let mut pb = ProgressBar::new(count as u64);
-    pb.format("[=> ]");
-
-    for i in 0..count {
-        let dotfile = &dotfiles[i];
-        let source_split: Vec<_> = dotfile.source.split("/").collect();
-        let file = source_split[source_split.len() - 1];
-
-        pb.message(&format!("{} ", &file.bright_green()));
-
-        if std::path::Path::new(&dotfile.source).is_file() {
-            // TODO: Find better names :(
-            let mut dests: Vec<_> = dotfile.destination.split("/").collect();
-
-            // Remove file remove vector
-            dests.pop();
-
-            std::fs::create_dir_all(dests.join("/"))?;
-
-            std::fs::copy(&dotfile.source, &dotfile.destination)?;
-        } else if std::path::Path::new(&dotfile.source).is_dir() {
-            CopyBuilder::new(dotfile.source.to_owned(), dotfile.destination.to_owned())
-                .overwrite_if_newer(true)
-                .overwrite_if_size_differs(true)
-                .run()?;
-        }
-
-        pb.inc();
-    }
-
-    Notification::new()
-        .summary("dotm")
-        .body("Done backing up dotfiles!")
-        .show()
-        .expect("Failed to send notification");
-
-    Ok(())
 }
