@@ -56,7 +56,7 @@ fn main() {
         exit(0);
     }
 
-    load(&dotm_db_path, &mut dotfiles).expect("Failed to load the database");
+    load(&dotm_db_path, &mut dotfiles);
 
     let cli = DotmArgs::parse();
 
@@ -135,9 +135,9 @@ fn main() {
             }
         }
         Commands::Backup {} => {
-            backup(&dotfiles).expect("Failed to backup dotfiles!");
+            backup(&dotfiles);
         }
     }
 
-    save(&dotm_db_path, &dotfiles).expect("Failed to save the database");
+    save(&dotm_db_path, &dotfiles);
 }

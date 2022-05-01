@@ -4,7 +4,7 @@ use dircpy::CopyBuilder;
 use notify_rust::Notification;
 use pbr::ProgressBar;
 
-pub fn backup(dotfiles: &Vec<StructDotfile>) -> Result<(), std::io::Error> {
+pub fn backup(dotfiles: &Vec<StructDotfile>) {
     let count = dotfiles.len();
     let mut pb = ProgressBar::new(count as u64);
     pb.format("[=> ]");
@@ -23,14 +23,15 @@ pub fn backup(dotfiles: &Vec<StructDotfile>) -> Result<(), std::io::Error> {
             // Remove file remove vector
             dests.pop();
 
-            std::fs::create_dir_all(dests.join("/"))?;
+            std::fs::create_dir_all(dests.join("/")).expect("Failed to create all dirs");
 
-            std::fs::copy(&dotfile.source, &dotfile.destination)?;
+            std::fs::copy(&dotfile.source, &dotfile.destination).expect("Failed to Copy File");
         } else if std::path::Path::new(&dotfile.source).is_dir() {
             CopyBuilder::new(dotfile.source.to_owned(), dotfile.destination.to_owned())
                 .overwrite_if_newer(true)
                 .overwrite_if_size_differs(true)
-                .run()?;
+                .run()
+                .expect("Failed to Copy directory");
         }
 
         pb.inc();
@@ -41,6 +42,4 @@ pub fn backup(dotfiles: &Vec<StructDotfile>) -> Result<(), std::io::Error> {
         .body("Done backing up dotfiles!")
         .show()
         .expect("Failed to send notification");
-
-    Ok(())
 }

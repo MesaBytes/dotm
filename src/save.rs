@@ -1,6 +1,6 @@
 use crate::StructDotfile;
 
-pub fn save(path: &String, dotfiles: &Vec<StructDotfile>) -> Result<(), std::io::Error> {
+pub fn save(path: &String, dotfiles: &Vec<StructDotfile>) {
     let mut contents = String::new();
 
     for dotfile in dotfiles.iter() {
@@ -9,7 +9,5 @@ pub fn save(path: &String, dotfiles: &Vec<StructDotfile>) -> Result<(), std::io:
         contents.push_str(&dotfile.destination);
         contents.push('\n');
     }
-    std::fs::write(path, contents)?;
-
-    Ok(())
+    std::fs::write(path, contents).expect("Failed to save to db file");
 }
