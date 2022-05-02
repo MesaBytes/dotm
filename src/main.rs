@@ -1,25 +1,28 @@
+mod args;
+mod backup;
 mod config;
-mod help;
 mod input;
+mod load;
+mod save;
 extern crate pbr;
 
+use args::*;
+use backup::backup;
+use clap::Parser;
 use colored::Colorize;
-use dircpy::CopyBuilder;
-use help::help;
 use input::input;
-use notify_rust::Notification;
-use pbr::ProgressBar;
-use std::{env, process};
+use load::load;
+use save::save;
+use std::fmt;
+use std::process::exit;
 use whoami;
 use youchoose;
 
 #[derive(Clone)]
-struct StructDotfile {
+pub struct StructDotfile {
     source: String,
     destination: String,
 }
-
-use std::fmt;
 
 impl fmt::Display for StructDotfile {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> fmt::Result {
@@ -27,10 +30,7 @@ impl fmt::Display for StructDotfile {
     }
 }
 
-const VERSION: &str = env!("CARGO_PKG_VERSION");
-
-fn main() -> Result<(), std::io::Error> {
-    let args: Vec<String> = env::args().skip(1).collect();
+fn main() {
     let mut dotfiles = Vec::<StructDotfile>::new();
     let dotm_db_path = format!("/home/{}/.config/dotm/dotm.db", whoami::username());
     let dotm_config_path = format!("/home/{}/.config/dotm/dotm.conf", whoami::username());
@@ -46,73 +46,75 @@ fn main() -> Result<(), std::io::Error> {
 
         if std::path::Path::new(&path).exists() == false {
             println!("'{}' is invalid path!", path);
-            process::exit(1);
+            exit(1);
         }
 
-        config.insert(String::from("backup_dir_path"), path.to_string())?;
+        config
+            .insert(String::from("backup_dir_path"), path.to_string())
+            .expect("Failed to get backup_dir_path");
 
-        process::exit(0);
+        exit(0);
     }
 
-    load(&dotm_db_path, &mut dotfiles)?;
+    load(&dotm_db_path, &mut dotfiles);
 
-    if args.len() != 0 {
-        if args[0] == "add" || args[0] == "a" {
-            let source = match &args.get(1) {
-                Some(val) => val,
-                None => "",
-            };
+    let cli = DotmArgs::parse();
 
-            let mut destination = match &args.get(2) {
-                Some(val) => val.to_string(),
-                None => "".to_string(),
-            };
-
-            if source.is_empty() && destination.is_empty() {
-                println!(
-                    "Missing {} and {}",
-                    format!("source").bright_red(),
-                    format!("destination").bright_red()
-                );
-                process::exit(1);
-            }
-            if destination.is_empty() {
-                println!("Missing {}", format!("destination").bright_red());
-                process::exit(1);
-            }
-
-            if std::path::Path::new(&source).exists() == false {
+    match &cli.command {
+        Commands::Add {
+            source,
+            destination,
+        } => {
+            if !std::path::Path::new(&source).exists() {
                 println!("{} does not exists!", source.bright_red());
-                process::exit(1);
+                exit(1);
             }
 
             // Check for duplicate entries
             for dotfile in dotfiles.iter() {
-                if source == dotfile.source {
+                if source.to_string() == dotfile.source {
                     println!("{} already exists!", source.bright_red());
-                    process::exit(1);
+                    exit(1);
                 }
             }
 
             let paths: Vec<_> = source.split("/").collect();
             let file = paths[paths.len() - 1];
             let mut full_destination = backup_path;
+            let mut mut_destination = destination.to_string();
 
             if !destination.ends_with("/") {
-                destination.push('/');
+                mut_destination.push('/');
             }
 
-            destination.push_str(file);
+            mut_destination.push_str(file);
             full_destination.push_str(&destination);
 
             dotfiles.push(StructDotfile {
                 source: source.to_string(),
                 destination: full_destination,
             })
-        } else if args[0] == "remove" || args[0] == "r" {
+        }
+        Commands::List {} => {
             if dotfiles.is_empty() {
                 println!("List is empty!");
-                process::exit(0);
+                exit(0);
+            }
+
+            println!("{0: <35} {1}", "Source", "Destination");
+            println!("-----------------------------------------------------");
+            for dotfile in dotfiles.iter() {
+                println!(
+                    "{0: <35} {1}",
+                    dotfile.source.bright_green(),
+                    dotfile.destination.bright_yellow()
+                );
+            }
+        }
+        Commands::Remove {} => {
+            if dotfiles.is_empty() {
+                println!("List is empty!");
+                exit(0);
             }
 
             let mut quit = false;
@@ -131,105 +133,11 @@ fn main() -> Result<(), std::io::Error> {
                     dotfiles.remove(choices[0]);
                 }
             }
-        } else if args[0] == "list" || args[0] == "l" {
-            if dotfiles.is_empty() {
-                println!("List is empty!");
-                process::exit(0);
-            }
-
-            println!("{0: <35} {1}", "Source", "Destination");
-            println!("-----------------------------------------------------");
-            for dotfile in dotfiles.iter() {
-                println!(
-                    "{0: <35} {1}",
-                    dotfile.source.bright_green(),
-                    dotfile.destination.bright_yellow()
-                );
-            }
-        } else if args[0] == "backup" || args[0] == "b" {
-            backup(&dotfiles)?;
-        } else if args[0] == "--version" || args[0] == "-v" {
-            println!("Version: {}", VERSION.bright_yellow());
+        }
+        Commands::Backup {} => {
+            backup(&dotfiles);
         }
     }
-    if args.len() == 0 || args[0] == "--help" || args[0] == "-h" {
-        help();
-    }
 
-    save(&dotm_db_path, &dotfiles)?;
-    Ok(())
-}
-
-fn load(path: &String, dotfiles: &mut Vec<StructDotfile>) -> Result<(), std::io::Error> {
-    if std::path::Path::new(path).exists() == false {
-        std::fs::write(path, "")?;
-    }
-
-    let contents = std::fs::read_to_string(path)?;
-
-    for line in contents.lines() {
-        let dotfile: Vec<_> = line.split(':').collect();
-
-        dotfiles.push(StructDotfile {
-            source: dotfile[0].to_string(),
-            destination: dotfile[1].to_string(),
-        });
-    }
-
-    Ok(())
-}
-
-fn save(path: &String, dotfiles: &Vec<StructDotfile>) -> Result<(), std::io::Error> {
-    let mut contents = String::new();
-
-    for dotfile in dotfiles.iter() {
-        contents.push_str(&dotfile.source);
-        contents.push(':');
-        contents.push_str(&dotfile.destination);
-        contents.push('\n');
-    }
-    std::fs::write(path, contents)?;
-
-    Ok(())
-}
-
-fn backup(dotfiles: &Vec<StructDotfile>) -> Result<(), std::io::Error> {
-    let count = dotfiles.len();
-    let mut pb = ProgressBar::new(count as u64);
-    pb.format("[=> ]");
-
-    for i in 0..count {
-        let dotfile = &dotfiles[i];
-        let source_split: Vec<_> = dotfile.source.split("/").collect();
-        let file = source_split[source_split.len() - 1];
-
-        pb.message(&format!("{} ", &file.bright_green()));
-
-        if std::path::Path::new(&dotfile.source).is_file() {
-            // TODO: Find better names :(
-            let mut dests: Vec<_> = dotfile.destination.split("/").collect();
-
-            // Remove file remove vector
-            dests.pop();
-
-            std::fs::create_dir_all(dests.join("/"))?;
-
-            std::fs::copy(&dotfile.source, &dotfile.destination)?;
-        } else if std::path::Path::new(&dotfile.source).is_dir() {
-            CopyBuilder::new(dotfile.source.to_owned(), dotfile.destination.to_owned())
-                .overwrite_if_newer(true)
-                .overwrite_if_size_differs(true)
-                .run()?;
-        }
-
-        pb.inc();
-    }
-
-    Notification::new()
-        .summary("dotm")
-        .body("Done backing up dotfiles!")
-        .show()
-        .expect("Failed to send notification");
-
-    Ok(())
+    save(&dotm_db_path, &dotfiles);
 }
