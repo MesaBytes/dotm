@@ -12,6 +12,22 @@ pub struct Ui {
     quit: bool,
 }
 
+// int i = 2, height, width;
+// WINDOW *new;
+
+// initscr();
+// getmaxyx(stdscr, height, width);
+// new = newwin(height - 2, width - 2, 1, 1);
+
+// scrollok(new,TRUE);
+
+// while(1)
+// {
+//     wprintw(new, "%d - lots and lots of lines flowing down the terminal\n", i);
+//     ++i;
+//     wrefresh(new);
+// }
+
 impl Ui {
     pub fn new() -> Ui {
         Ui {
@@ -24,11 +40,7 @@ impl Ui {
     }
 
     pub fn init(&mut self) {
-        // let mut max_rows: i32 = 0;
-        // let mut max_columns: i32 = 0;
-        // let mut cursor_position: usize = 0;
-
-        let window = nc::initscr();
+        let screen = nc::initscr();
 
         nc::start_color();
         nc::init_pair(REGULAR_PAIR, nc::COLOR_CYAN, nc::COLOR_BLACK);
@@ -36,14 +48,18 @@ impl Ui {
 
         nc::noecho();
         nc::cbreak();
-        nc::raw();
+        // nc::raw();
         nc::curs_set(nc::CURSOR_VISIBILITY::CURSOR_INVISIBLE);
 
-        getmaxyx(window, &mut self.max_rows, &mut self.max_columns);
+        getmaxyx(screen, &mut self.max_rows, &mut self.max_columns);
+
+        let window = nc::newwin(self.max_rows - 2, self.max_columns - 2, 1, 1);
+
+        nc::scrollok(window, true);
 
         let mut test_items: Vec<i32> = Vec::new();
 
-        for i in 0..5 {
+        for i in 0..100 {
             test_items.push(i);
         }
 
@@ -52,8 +68,9 @@ impl Ui {
         let mut page_number: i32 = 0;
 
         while !self.quit {
+            nc::refresh();
             for (current_index, item) in test_items.iter().enumerate() {
-                // if current_index as i32 == max_rows {
+                // if current_index as i32 == self.max_rows {
                 //     last_index = current_index as i32;
                 //     page_number += 1;
                 //     break;
@@ -68,23 +85,21 @@ impl Ui {
                 };
 
                 nc::attron(nc::COLOR_PAIR(pair));
-                nc::mv(current_index as i32, 0);
-                nc::addstr(&item.to_string());
+                nc::wmove(window, current_index as i32, 0);
+                nc::waddstr(window, &format!("{}\n", item.to_string()));
                 nc::attr_off(nc::COLOR_PAIR(pair));
             }
 
-            nc::refresh();
+            nc::wrefresh(window);
 
             match nc::getch() as u8 as char {
                 'j' => self.move_cursor(Directions::Down),
                 'k' => self.move_cursor(Directions::Up),
-                'q' => {
-                    self.quit = true;
-                }
+                'q' => self.quit = true,
                 _ => {}
             }
         }
-
+        nc::delwin(window);
         nc::endwin();
     }
 
@@ -96,7 +111,9 @@ impl Ui {
                 }
             }
             Directions::Down => {
-                if self.cursor_position != self.max_menu_rows {
+                if self.cursor_position < self.max_menu_rows
+                    || self.max_rows <= self.max_menu_rows as i32
+                {
                     self.cursor_position += 1;
                 }
             }
