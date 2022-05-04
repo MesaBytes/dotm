@@ -10,3 +10,4 @@ cargo install --path .
 
 # todo
 
+- [] Rewrite with tui-rs
