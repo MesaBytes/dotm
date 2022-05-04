@@ -76,8 +76,8 @@ impl Ui {
             nc::refresh();
 
             match nc::getch() as u8 as char {
-                'j' => self.scroll(ScrollDirections::Down),
-                'k' => self.scroll(ScrollDirections::Up),
+                'j' => self.move_cursor(Directions::Down),
+                'k' => self.move_cursor(Directions::Up),
                 'q' => {
                     self.quit = true;
                 }
@@ -88,14 +88,14 @@ impl Ui {
         nc::endwin();
     }
 
-    fn scroll(&mut self, direction: ScrollDirections) {
+    fn move_cursor(&mut self, direction: Directions) {
         match &direction {
-            ScrollDirections::Up => {
+            Directions::Up => {
                 if self.cursor_position != 0 {
                     self.cursor_position -= 1;
                 }
             }
-            ScrollDirections::Down => {
+            Directions::Down => {
                 if self.cursor_position != self.max_menu_rows {
                     self.cursor_position += 1;
                 }
@@ -104,7 +104,7 @@ impl Ui {
     }
 }
 
-enum ScrollDirections {
+enum Directions {
     Up,
     Down,
 }
