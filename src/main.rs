@@ -1,3 +1,8 @@
+mod app;
+use app::App;
+
 fn main() {
-    println!("Hello");
+    let mut app = App::new();
+
+    app.init();
 }
