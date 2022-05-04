@@ -1,0 +1,13 @@
+how to implement pager for ncurses menu
+
+loop and print items if current index is equal to the max row number break from the loop
+and save last item index to a var and increment page number index (maybe display page number at the bottom like: current page number/max page number)
+if user click 'l' or move down last item on screen
+increment page number (and change current page number at the bottom) and change last item index
+
+loop {
+    if current index is equal to the max row number 
+        change last item index to current index
+        increment page number
+        break or return; 
+}
