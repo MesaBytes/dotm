@@ -39,7 +39,7 @@ impl Ui {
         }
     }
 
-    pub fn init(&mut self) {
+    pub fn init(mut self) {
         let screen = nc::initscr();
 
         nc::start_color();
@@ -53,10 +53,6 @@ impl Ui {
 
         getmaxyx(screen, &mut self.max_rows, &mut self.max_columns);
 
-        let window = nc::newwin(self.max_rows - 2, self.max_columns - 2, 1, 1);
-
-        nc::scrollok(window, true);
-
         let mut test_items: Vec<i32> = Vec::new();
 
         for i in 0..100 {
@@ -67,6 +63,7 @@ impl Ui {
         let mut last_index: i32 = 0;
         let mut page_number: i32 = 0;
 
+        // Main loop
         while !self.quit {
             nc::refresh();
             for (current_index, item) in test_items.iter().enumerate() {
@@ -85,21 +82,12 @@ impl Ui {
                 };
 
                 nc::attron(nc::COLOR_PAIR(pair));
-                nc::wmove(window, current_index as i32, 0);
-                nc::waddstr(window, &format!("{}\n", item.to_string()));
+                nc::mv(current_index as i32, 0);
+                nc::addstr(&format!("{}\n", item.to_string()));
                 nc::attr_off(nc::COLOR_PAIR(pair));
             }
-
-            nc::wrefresh(window);
-
-            match nc::getch() as u8 as char {
-                'j' => self.move_cursor(Directions::Down),
-                'k' => self.move_cursor(Directions::Up),
-                'q' => self.quit = true,
-                _ => {}
-            }
+            self.get_keys();
         }
-        nc::delwin(window);
         nc::endwin();
     }
 
@@ -117,6 +105,15 @@ impl Ui {
                     self.cursor_position += 1;
                 }
             }
+        }
+    }
+
+    fn get_keys(&mut self) {
+        match nc::getch() as u8 as char {
+            'j' => self.move_cursor(Directions::Down),
+            'k' => self.move_cursor(Directions::Up),
+            'q' => self.quit = true,
+            _ => {}
         }
     }
 }
