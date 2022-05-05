@@ -8,7 +8,10 @@ impl App {
     }
 
     pub fn init(&self) {
-        let mut ui = Ui::new();
+        // Before initalization ui (list)
+        // Display main menu and if 'List' is selected initialize 'List'
+        // if 'Backup' is selected run backup function with progress bar
+        let ui = Ui::new();
 
         ui.init();
     }
