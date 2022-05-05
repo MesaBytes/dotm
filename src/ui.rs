@@ -8,7 +8,14 @@ pub struct Ui {
     max_columns: i32,
     cursor_position: usize,
     max_menu_rows: usize,
+    pager: Pager,
     quit: bool,
+}
+
+struct Pager {
+    page_number: usize,
+    max_pages: usize,
+    last_list_index: usize,
 }
 
 impl Ui {
@@ -18,6 +25,11 @@ impl Ui {
             max_columns: 0,
             cursor_position: 0,
             max_menu_rows: 0,
+            pager: Pager {
+                page_number: 1,
+                max_pages: 1,
+                last_list_index: 0,
+            },
             quit: false,
         }
     }
@@ -31,13 +43,9 @@ impl Ui {
 
         nc::noecho();
         nc::cbreak();
-        // nc::raw();
         nc::curs_set(nc::CURSOR_VISIBILITY::CURSOR_INVISIBLE);
 
         nc::getmaxyx(screen, &mut self.max_rows, &mut self.max_columns);
-
-        let mut last_index: i32 = 0;
-        let mut page_number: i32 = 0;
 
         // Main loop
         while !self.quit {
@@ -83,12 +91,8 @@ impl Ui {
 
         self.max_menu_rows = test_items.len() - 1;
 
-        for (current_index, item) in test_items.iter().enumerate() {
-            // if current_index as i32 == self.max_rows {
-            //     last_index = current_index as i32;
-            //     page_number += 1;
-            //     break;
-            // }
+        for current_index in 0..test_items.len() {
+            let mut item = test_items[current_index];
 
             let pair = {
                 if self.cursor_position == current_index {
@@ -98,11 +102,36 @@ impl Ui {
                 }
             };
 
-            nc::attron(nc::COLOR_PAIR(pair));
-            nc::mv(current_index as i32, 0);
-            nc::addstr(&format!("{}\n", item.to_string()));
-            nc::attr_off(nc::COLOR_PAIR(pair));
+            if current_index as i32 == self.max_rows - 3 {
+                self.pager.last_list_index = current_index;
+                break;
+            }
+
+            if self.cursor_position as i32 == self.max_rows - 3 {
+                // clear screen and increment page number
+                // change last index
+                nc::clear();
+                self.pager.page_number += 1;
+                // nc::attron(nc::COLOR_PAIR(pair));
+                // nc::mv(current_index as i32, 0);
+                // nc::addstr(&format!("{}", item.to_string()));
+                // nc::attr_off(nc::COLOR_PAIR(pair));
+            } else {
+                nc::attron(nc::COLOR_PAIR(pair));
+                nc::mv(current_index as i32, 0);
+                nc::addstr(&format!("{}", item.to_string()));
+                nc::attr_off(nc::COLOR_PAIR(pair));
+            }
         }
+
+        nc::mv(self.max_rows - 1, 0);
+        nc::addstr(&format!("page {}", self.pager.page_number));
+
+        nc::mv(self.max_rows - 1, 10);
+        nc::addstr(&format!("cursor_position {}", self.cursor_position));
+
+        // nc::mv(self.max_rows - 1, 20);
+        // nc::addstr(&format!("page {}", self.));
     }
 }
 
