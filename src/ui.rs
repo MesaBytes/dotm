@@ -1,4 +1,3 @@
-use nc::{getmaxyx, COLOR_PAIR};
 use ncurses as nc;
 
 const REGULAR_PAIR: i16 = 0;
@@ -11,22 +10,6 @@ pub struct Ui {
     max_menu_rows: usize,
     quit: bool,
 }
-
-// int i = 2, height, width;
-// WINDOW *new;
-
-// initscr();
-// getmaxyx(stdscr, height, width);
-// new = newwin(height - 2, width - 2, 1, 1);
-
-// scrollok(new,TRUE);
-
-// while(1)
-// {
-//     wprintw(new, "%d - lots and lots of lines flowing down the terminal\n", i);
-//     ++i;
-//     wrefresh(new);
-// }
 
 impl Ui {
     pub fn new() -> Ui {
@@ -51,7 +34,7 @@ impl Ui {
         // nc::raw();
         nc::curs_set(nc::CURSOR_VISIBILITY::CURSOR_INVISIBLE);
 
-        getmaxyx(screen, &mut self.max_rows, &mut self.max_columns);
+        nc::getmaxyx(screen, &mut self.max_rows, &mut self.max_columns);
 
         let mut test_items: Vec<i32> = Vec::new();
 
@@ -91,6 +74,15 @@ impl Ui {
         nc::endwin();
     }
 
+    fn get_keys(&mut self) {
+        match nc::getch() as u8 as char {
+            'j' => self.move_cursor(Directions::Down),
+            'k' => self.move_cursor(Directions::Up),
+            'q' => self.quit = true,
+            _ => {}
+        }
+    }
+
     fn move_cursor(&mut self, direction: Directions) {
         match &direction {
             Directions::Up => {
@@ -105,15 +97,6 @@ impl Ui {
                     self.cursor_position += 1;
                 }
             }
-        }
-    }
-
-    fn get_keys(&mut self) {
-        match nc::getch() as u8 as char {
-            'j' => self.move_cursor(Directions::Down),
-            'k' => self.move_cursor(Directions::Up),
-            'q' => self.quit = true,
-            _ => {}
         }
     }
 }
