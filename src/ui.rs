@@ -36,39 +36,13 @@ impl Ui {
 
         nc::getmaxyx(screen, &mut self.max_rows, &mut self.max_columns);
 
-        let mut test_items: Vec<i32> = Vec::new();
-
-        for i in 0..100 {
-            test_items.push(i);
-        }
-
-        self.max_menu_rows = test_items.len() - 1;
         let mut last_index: i32 = 0;
         let mut page_number: i32 = 0;
 
         // Main loop
         while !self.quit {
             nc::refresh();
-            for (current_index, item) in test_items.iter().enumerate() {
-                // if current_index as i32 == self.max_rows {
-                //     last_index = current_index as i32;
-                //     page_number += 1;
-                //     break;
-                // }
-
-                let pair = {
-                    if self.cursor_position == current_index {
-                        HIGHLIGHT_PAIR
-                    } else {
-                        REGULAR_PAIR
-                    }
-                };
-
-                nc::attron(nc::COLOR_PAIR(pair));
-                nc::mv(current_index as i32, 0);
-                nc::addstr(&format!("{}\n", item.to_string()));
-                nc::attr_off(nc::COLOR_PAIR(pair));
-            }
+            self.display();
             self.get_keys();
         }
         nc::endwin();
@@ -97,6 +71,37 @@ impl Ui {
                     self.cursor_position += 1;
                 }
             }
+        }
+    }
+
+    fn display(&mut self) {
+        let mut test_items: Vec<i32> = Vec::new();
+
+        for i in 0..100 {
+            test_items.push(i);
+        }
+
+        self.max_menu_rows = test_items.len() - 1;
+
+        for (current_index, item) in test_items.iter().enumerate() {
+            // if current_index as i32 == self.max_rows {
+            //     last_index = current_index as i32;
+            //     page_number += 1;
+            //     break;
+            // }
+
+            let pair = {
+                if self.cursor_position == current_index {
+                    HIGHLIGHT_PAIR
+                } else {
+                    REGULAR_PAIR
+                }
+            };
+
+            nc::attron(nc::COLOR_PAIR(pair));
+            nc::mv(current_index as i32, 0);
+            nc::addstr(&format!("{}\n", item.to_string()));
+            nc::attr_off(nc::COLOR_PAIR(pair));
         }
     }
 }
