@@ -88,7 +88,7 @@ fn main() {
             }
 
             mut_destination.push_str(file);
-            full_destination.push_str(&destination);
+            full_destination.push_str(&mut_destination);
 
             dotfiles.push(StructDotfile {
                 source: source.to_string(),
