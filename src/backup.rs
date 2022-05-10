@@ -28,8 +28,7 @@ pub fn backup(dotfiles: &Vec<StructDotfile>) {
             std::fs::copy(&dotfile.source, &dotfile.destination).expect("Failed to Copy File");
         } else if std::path::Path::new(&dotfile.source).is_dir() {
             CopyBuilder::new(dotfile.source.to_owned(), dotfile.destination.to_owned())
-                .overwrite_if_newer(true)
-                .overwrite_if_size_differs(true)
+                .overwrite(true)
                 .run()
                 .expect("Failed to Copy directory");
         }
