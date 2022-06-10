@@ -2,11 +2,12 @@ DIST=/bin
 
 help: 
 	@echo -e "install-cli \t\tinstall dotm cli"
-	@echo -e "uninstall-cli	\tonly uninstall dotm cli"
-	@echo
 	@echo -e "install-gui \t\tinstall dotm gui"
+	@echo
+	@echo -e "uninstall-cli	\tonly uninstall dotm cli"
 	@echo -e "uninstall-gui \t\tonly uninstall dotm gui"
 	@echo
+	@echo -e "install	\t\tinstall both cli and gui"
 	@echo -e "uninstall	\tuninstall both cli and gui"
 
 install-cli: ./cli
