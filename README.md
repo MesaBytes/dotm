@@ -5,20 +5,20 @@ git clone https://github.com/Senpai-10/dotm.git
 cd dotm
 ```
 
-### installing the cli version
+### **installing the cli version**
 
 ```
-make install-cli
+sudo make install-cli
 ```
 
 #### usage
 
 `$ dotm`
 
-### installing the gui version
+### **installing the gui version**
 
 ```
-make install-gui
+sudo make install-gui
 ```
 
 #### usage
