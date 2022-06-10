@@ -1,13 +1,26 @@
 # dotfiles manager
 
-## Install
-
 ```
 git clone https://github.com/Senpai-10/dotm.git
 cd dotm
-cargo install --path .
 ```
 
-# todo
+### installing the cli version
 
-- [] Rewrite with tui-rs
+```
+make install-cli
+```
+
+#### usage
+
+`$ dotm`
+
+### installing the gui version
+
+```
+make install-gui
+```
+
+#### usage
+
+`$ dotm-gui`
