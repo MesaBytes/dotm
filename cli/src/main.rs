@@ -2,7 +2,7 @@ mod args;
 mod config;
 mod input;
 
-use core::{Dotfile, save, load, backup};
+use core::{Dotfile, Dotm};
 use args::*;
 use colored::Colorize;
 use clap::Parser;
@@ -12,12 +12,16 @@ use whoami;
 use youchoose;
 
 fn main() {
-    let mut dotfiles = Vec::<Dotfile>::new();
-    let dotm_db_path = format!("/home/{}/.config/dotm/dotm.db", whoami::username());
-    let dotm_config_path = format!("/home/{}/.config/dotm/dotm.conf", whoami::username());
+    let db_path = format!("/home/{}/.config/dotm/dotm.db", whoami::username());
+    let config_path = format!("/home/{}/.config/dotm/dotm.conf", whoami::username());
+
+    let mut dotm = Dotm::new(db_path, config_path.to_string());
+    dotm.load();
+
+    let dotfiles = dotm.get_list().clone();
 
     let mut config =
-        config::Config::new(&dotm_config_path).expect("Failed initialization the database!");
+        config::Config::new(&config_path).expect("Failed initialization the database!");
     let backup_path = config.get("backup_dir_path").to_string();
 
     if backup_path.is_empty() {
@@ -37,7 +41,7 @@ fn main() {
         exit(0);
     }
 
-    load(&dotm_db_path, &mut dotfiles);
+    // load(&db_path, &mut dotfiles);
 
     let cli = DotmArgs::parse();
 
@@ -71,10 +75,9 @@ fn main() {
             mut_destination.push_str(file);
             full_destination.push_str(&mut_destination);
 
-            dotfiles.push(Dotfile {
-                source: source.to_string(),
-                destination: full_destination,
-            })
+            dotm.add(Dotfile { source: source.to_string(), destination: full_destination });
+
+            dotm.save();
         }
         Commands::List {} => {
             if dotfiles.is_empty() {
@@ -111,14 +114,15 @@ fn main() {
                 if choices.len() == 0 {
                     quit = true;
                 } else {
-                    dotfiles.remove(choices[0]);
+                    dotm.remove(choices[0]);
                 }
             }
+
+            dotm.save();
         }
         Commands::Backup {} => {
-            backup(&dotfiles);
+            dotm.backup();
         }
     }
 
-    save(&dotm_db_path, &dotfiles);
 }
