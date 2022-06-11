@@ -17,18 +17,55 @@ use notify_rust::Notification;
 use pbr::ProgressBar;
 
 #[derive(Clone)]
-pub struct StructDotfile {
+pub struct Dotfile {
     pub source: String,
     pub destination: String,
 }
 
-impl std::fmt::Display for StructDotfile {
+impl std::fmt::Display for Dotfile {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "{0: <35} {1}", self.source, self.destination)
     }
 }
 
-pub fn save(path: &String, dotfiles: &Vec<StructDotfile>) {
+pub struct Dotm {
+    db_path: String,
+    config_path: String,
+    dotfiles: Vec::<Dotfile>
+}
+
+impl Dotm {
+    pub fn new(db_path: String, config_path: String) -> Self {
+        Self {
+            config_path,
+            db_path,
+            dotfiles: Vec::new()
+        }
+    }
+
+    /// Add dotfile
+    fn add() {}
+
+    /// Remove dotfile
+    fn remove() {}
+
+    /// Get dotfiles
+    fn get_all(&self) -> &Vec<Dotfile> {
+        return &self.dotfiles
+    }
+
+    /// Save dotfiles to dotfiles.json
+    fn save() {}
+    
+    /// Load dotfiles from dotfiles.json to self.dotfiles
+    fn load() {}
+
+    /// Copy files to backup dir
+    fn backup() {}
+}
+
+#[deprecated]
+pub fn save(path: &String, dotfiles: &Vec<Dotfile>) {
     let mut contents = String::new();
 
     for dotfile in dotfiles.iter() {
@@ -39,8 +76,8 @@ pub fn save(path: &String, dotfiles: &Vec<StructDotfile>) {
     }
     std::fs::write(path, contents).expect("Failed to save to db file");
 }
-
-pub fn load(path: &String, dotfiles: &mut Vec<StructDotfile>) {
+#[deprecated]
+pub fn load(path: &String, dotfiles: &mut Vec<Dotfile>) {
     if std::path::Path::new(path).exists() == false {
         std::fs::write(path, "").expect("Failed to create db file");
     }
@@ -50,14 +87,14 @@ pub fn load(path: &String, dotfiles: &mut Vec<StructDotfile>) {
     for line in contents.lines() {
         let dotfile: Vec<_> = line.split(':').collect();
 
-        dotfiles.push(StructDotfile {
+        dotfiles.push(Dotfile {
             source: dotfile[0].to_string(),
             destination: dotfile[1].to_string(),
         });
     }
 }
-
-pub fn backup(dotfiles: &Vec<StructDotfile>) {
+#[deprecated]
+pub fn backup(dotfiles: &Vec<Dotfile>) {
     let count = dotfiles.len();
     let mut pb = ProgressBar::new(count as u64);
     pb.format("[=> ]");

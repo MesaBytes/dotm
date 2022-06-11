@@ -2,7 +2,7 @@ mod args;
 mod config;
 mod input;
 
-use core::{StructDotfile, save, load, backup};
+use core::{Dotfile, save, load, backup};
 use args::*;
 use colored::Colorize;
 use clap::Parser;
@@ -12,7 +12,7 @@ use whoami;
 use youchoose;
 
 fn main() {
-    let mut dotfiles = Vec::<StructDotfile>::new();
+    let mut dotfiles = Vec::<Dotfile>::new();
     let dotm_db_path = format!("/home/{}/.config/dotm/dotm.db", whoami::username());
     let dotm_config_path = format!("/home/{}/.config/dotm/dotm.conf", whoami::username());
 
@@ -71,7 +71,7 @@ fn main() {
             mut_destination.push_str(file);
             full_destination.push_str(&mut_destination);
 
-            dotfiles.push(StructDotfile {
+            dotfiles.push(Dotfile {
                 source: source.to_string(),
                 destination: full_destination,
             })
