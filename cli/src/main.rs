@@ -1,35 +1,15 @@
 mod args;
-mod backup;
 mod config;
 mod input;
-mod load;
-mod save;
-extern crate pbr;
 
-use core;
+use core::{StructDotfile, save, load, backup};
 use args::*;
-use backup::backup;
-use clap::Parser;
 use colored::Colorize;
+use clap::Parser;
 use input::input;
-use load::load;
-use save::save;
-use std::fmt;
 use std::process::exit;
 use whoami;
 use youchoose;
-
-#[derive(Clone)]
-pub struct StructDotfile {
-    source: String,
-    destination: String,
-}
-
-impl fmt::Display for StructDotfile {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> fmt::Result {
-        write!(f, "{0: <35} {1}", self.source, self.destination)
-    }
-}
 
 fn main() {
     let mut dotfiles = Vec::<StructDotfile>::new();
