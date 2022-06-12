@@ -1,28 +1,24 @@
 mod args;
-mod config;
 mod input;
 
-use core::{Dotfile, Dotm};
+use core::{dotm::Dotfile, dotm::Dotm, config::Config};
 use args::*;
 use colored::Colorize;
 use clap::Parser;
 use input::input;
 use std::process::exit;
 use whoami;
-use youchoose;
 
 fn main() {
     let db_path = format!("/home/{}/.config/dotm/dotm.db", whoami::username());
     let config_path = format!("/home/{}/.config/dotm/dotm.conf", whoami::username());
 
-    let mut dotm = Dotm::new(db_path, config_path.to_string());
-    dotm.load();
-
-    let dotfiles = dotm.get_list().clone();
-
-    let mut config =
-        config::Config::new(&config_path).expect("Failed initialization the database!");
+    let mut config = Config::new(&config_path);
     let backup_path = config.get("backup_dir_path").to_string();
+
+    let mut dotm = Dotm::new(db_path);
+
+    let dotfiles = dotm.load().clone();
 
     if backup_path.is_empty() {
         println!("No backup path is found!");
@@ -34,14 +30,11 @@ fn main() {
             exit(1);
         }
 
-        config
-            .insert(String::from("backup_dir_path"), path.to_string())
-            .expect("Failed to get backup_dir_path");
-
+        config.insert(String::from("backup_dir_path"), path.to_string());
         exit(0);
     }
 
-    // load(&db_path, &mut dotfiles);
+    
 
     let cli = DotmArgs::parse();
 
@@ -95,26 +88,26 @@ fn main() {
                 );
             }
         }
-        Commands::Remove {} => {
+        Commands::Remove {
+            path
+        } => {
             if dotfiles.is_empty() {
                 println!("List is empty!");
                 exit(0);
             }
 
-            let mut quit = false;
-            while quit == false && dotfiles.len() > 0 {
-                let menu_list = dotfiles.clone();
+            if path == "all" {
+                dotm.clear();
+            } else {
+                let index_element = dotfiles
+                    .iter()
+                    .position(|x| x.source == *path);
 
-                let mut menu = youchoose::Menu::new(menu_list.iter())
-                    .add_up_key('k' as i32)
-                    .add_down_key('j' as i32);
-
-                let choices = menu.show();
-
-                if choices.len() == 0 {
-                    quit = true;
-                } else {
-                    dotm.remove(choices[0]);
+                match index_element {
+                    Some(i) => {
+                        dotm.remove(i)
+                    }
+                    None => return
                 }
             }
 

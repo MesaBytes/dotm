@@ -21,7 +21,10 @@ pub enum Commands {
     List {},
 
     /// remove dotfile
-    Remove {},
+    Remove {
+        /// dotfile path or use 'all' to remove all dotfiles
+        path: String
+    },
 
     // Backup all dotfiles
     Backup {},

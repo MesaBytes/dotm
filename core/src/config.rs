@@ -8,29 +8,32 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new(file_path: &str) -> Result<Config, std::io::Error> {
+    pub fn new(file_path: &str) -> Self {
         if std::path::Path::new(file_path).exists() == false {
-            std::fs::write(file_path, "")?;
+            std::fs::write(file_path, "").expect("Failed to write file");
         }
 
         let mut map = HashMap::new();
-        let contents = std::fs::read_to_string(file_path)?;
+        let contents = std::fs::read_to_string(file_path).expect("Failed to read file");
 
         for line in contents.lines() {
-            let (key, value) = line.split_once('=').expect("corrupt database!");
+            if line.starts_with('#') || line.starts_with("//"){
+                continue;
+            }
+
+            let (key, value) = line.split_once('=').expect("Corrupt config file!");
             map.insert(key.to_owned(), value.to_owned());
         }
 
-        Ok(Config {
+        Self {
             file_path: file_path.to_owned(),
             map,
-        })
+        }
     }
 
-    pub fn insert(&mut self, key: String, value: String) -> Result<(), std::io::Error> {
+    pub fn insert(&mut self, key: String, value: String) -> () {
         self.map.insert(key, value);
-        self.save()?;
-        Ok(())
+        self.save();
     }
 
     pub fn get(&self, key: &str) -> &str {
@@ -40,7 +43,7 @@ impl Config {
         }
     }
 
-    fn save(&self) -> Result<(), std::io::Error> {
+    fn save(&self) -> () {
         let mut contents = String::new();
         for (key, value) in &self.map {
             contents.push_str(key);
@@ -49,7 +52,6 @@ impl Config {
             contents.push('\n');
         }
 
-        std::fs::write(self.file_path.clone(), contents)?;
-        Ok(())
+        std::fs::write(self.file_path.clone(), contents).expect("Failed to write file");
     }
 }
