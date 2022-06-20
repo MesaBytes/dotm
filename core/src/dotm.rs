@@ -58,14 +58,14 @@ impl Dotm {
     pub fn clear(&mut self) {
         self.dotfiles.clear();
     }
-    
+
     /// Load dotfiles from dotfiles.json to self.dotfiles
     pub fn load(&mut self) -> &Vec<Dotfile> {
         let contents = std::fs::read_to_string(&self.db_path).expect("Failed to read from database");
-    
+        
         for line in contents.lines() {
             let dotfile: Vec<_> = line.split(':').collect();
-    
+
             self.dotfiles.push(Dotfile {
                 source: dotfile[0].to_string(),
                 destination: dotfile[1].to_string(),
@@ -80,23 +80,23 @@ impl Dotm {
         let count = self.dotfiles.len();
         let mut pb = ProgressBar::new(count as u64);
         pb.format("[=> ]");
-    
+
         for i in 0..count {
             let dotfile = &self.dotfiles[i];
             let source_split: Vec<_> = dotfile.source.split("/").collect();
             let file = source_split[source_split.len() - 1];
-    
+
             pb.message(&format!("{} ", &file.bright_green()));
-    
+
             if std::path::Path::new(&dotfile.source).is_file() {
                 // TODO: Find better names :(
                 let mut dests: Vec<_> = dotfile.destination.split("/").collect();
-    
+
                 // Remove file remove vector
                 dests.pop();
-    
+
                 std::fs::create_dir_all(dests.join("/")).expect("Failed to create all dirs");
-    
+
                 std::fs::copy(&dotfile.source, &dotfile.destination).expect("Failed to Copy File");
             } else if std::path::Path::new(&dotfile.source).is_dir() {
                 CopyBuilder::new(dotfile.source.to_owned(), dotfile.destination.to_owned())
@@ -104,15 +104,15 @@ impl Dotm {
                     .run()
                     .expect("Failed to Copy directory");
             }
-    
+
             pb.inc();
         }
-    
+
         Notification::new()
             .summary("dotm")
             .body("Done backing up dotfiles!")
             .show()
             .expect("Failed to send notification");
-    
+
     }
 }
