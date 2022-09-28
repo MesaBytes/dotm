@@ -1,6 +1,6 @@
 DIST=/bin
 
-help: 
+help:
 	@echo -e "install-cli \t\tinstall dotm cli"
 	@echo -e "install-gui \t\tinstall dotm gui"
 	@echo
@@ -12,19 +12,19 @@ help:
 
 install-cli: ./cli
 	@echo "############# Installing dotm (cli) #############"
-	@cd cli/; cargo build -r 
+	@cd cli/; cargo build -r
 	cp cli/target/release/dotm ${DIST}/
 
 install-gui: ./gui
 	@echo "############# Installing dotm-gui #############"
-	@cd gui/; cargo build -r 
+	@cd gui/; cargo build -r
 	cp gui/target/release/dotm-gui ${DIST}/
 
 uninstall-cli:
 	@echo "############# Uninstalling dotm (cli) #################"
 	rm -f ${DIST}/dotm
 
-uninstall-gui: 
+uninstall-gui:
 	@echo "############# Uninstalling dotm-gui ###############"
 	rm -f ${DIST}/dotm-gui
 

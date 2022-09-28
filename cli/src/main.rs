@@ -1,44 +1,24 @@
 mod args;
-mod backup;
-mod config;
 mod input;
-mod load;
-mod save;
-extern crate pbr;
 
-use core;
+use core::{dotm::Dotfile, dotm::Dotm, config::Config};
 use args::*;
-use backup::backup;
-use clap::Parser;
 use colored::Colorize;
+use clap::Parser;
 use input::input;
-use load::load;
-use save::save;
-use std::fmt;
 use std::process::exit;
 use whoami;
-use youchoose;
-
-#[derive(Clone)]
-pub struct StructDotfile {
-    source: String,
-    destination: String,
-}
-
-impl fmt::Display for StructDotfile {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> fmt::Result {
-        write!(f, "{0: <35} {1}", self.source, self.destination)
-    }
-}
 
 fn main() {
-    let mut dotfiles = Vec::<StructDotfile>::new();
-    let dotm_db_path = format!("/home/{}/.config/dotm/dotm.db", whoami::username());
-    let dotm_config_path = format!("/home/{}/.config/dotm/dotm.conf", whoami::username());
+    let db_path = format!("/home/{}/.config/dotm/dotm.db", whoami::username());
+    let config_path = format!("/home/{}/.config/dotm/dotm.conf", whoami::username());
 
-    let mut config =
-        config::Config::new(&dotm_config_path).expect("Failed initialization the database!");
+    let mut config = Config::new(&config_path);
     let backup_path = config.get("backup_dir_path").to_string();
+
+    let mut dotm = Dotm::new(db_path);
+
+    let dotfiles = dotm.load().clone();
 
     if backup_path.is_empty() {
         println!("No backup path is found!");
@@ -50,14 +30,11 @@ fn main() {
             exit(1);
         }
 
-        config
-            .insert(String::from("backup_dir_path"), path.to_string())
-            .expect("Failed to get backup_dir_path");
-
+        config.insert(String::from("backup_dir_path"), path.to_string());
         exit(0);
     }
 
-    load(&dotm_db_path, &mut dotfiles);
+    
 
     let cli = DotmArgs::parse();
 
@@ -91,10 +68,9 @@ fn main() {
             mut_destination.push_str(file);
             full_destination.push_str(&mut_destination);
 
-            dotfiles.push(StructDotfile {
-                source: source.to_string(),
-                destination: full_destination,
-            })
+            dotm.add(Dotfile { source: source.to_string(), destination: full_destination });
+
+            dotm.save();
         }
         Commands::List {} => {
             if dotfiles.is_empty() {
@@ -112,33 +88,34 @@ fn main() {
                 );
             }
         }
-        Commands::Remove {} => {
+        Commands::Remove {
+            path
+        } => {
             if dotfiles.is_empty() {
                 println!("List is empty!");
                 exit(0);
             }
 
-            let mut quit = false;
-            while quit == false && dotfiles.len() > 0 {
-                let menu_list = dotfiles.clone();
+            if path == "all" {
+                dotm.clear();
+            } else {
+                let index_element = dotfiles
+                    .iter()
+                    .position(|x| x.source == *path);
 
-                let mut menu = youchoose::Menu::new(menu_list.iter())
-                    .add_up_key('k' as i32)
-                    .add_down_key('j' as i32);
-
-                let choices = menu.show();
-
-                if choices.len() == 0 {
-                    quit = true;
-                } else {
-                    dotfiles.remove(choices[0]);
+                match index_element {
+                    Some(i) => {
+                        dotm.remove(i)
+                    }
+                    None => return
                 }
             }
+
+            dotm.save();
         }
         Commands::Backup {} => {
-            backup(&dotfiles);
+            dotm.backup();
         }
     }
 
-    save(&dotm_db_path, &dotfiles);
 }
