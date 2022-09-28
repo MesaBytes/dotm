@@ -2,7 +2,7 @@
 
 members = [
     "core",
-    "gui",
+    "gui/src-tauri",
     "cli"
 ]
 
