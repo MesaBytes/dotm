@@ -24,7 +24,3 @@ sudo make install-gui
 #### usage
 
 `$ dotm-gui`
-
-### TODO
-
-[x] - write core lib in core parse `dotm.conf`, and parse and save in hashmap `dotm.db`, backup, and more!
